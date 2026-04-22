@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Lawden Bhojyam | $NAMAK Banner</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Boogaloo&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #050810;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-family: sans-serif;
+    padding: 24px;
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    width: 1920px;
+    max-width: calc(100vw - 48px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px 12px 0 0;
+  }
+  .toolbar-info { color: rgba(255,255,255,0.5); font-size: 13px; letter-spacing: 1px; }
+  .toolbar-info span { color: #f5c842; font-weight: 700; }
+
+  .btn-group { display: flex; gap: 12px; }
+
+  .dl-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #f5c842, #ff6b1a);
+    border: none; border-radius: 8px;
+    color: #0b0e2a; font-size: 14px; font-weight: 700;
+    letter-spacing: 1px; padding: 10px 22px;
+    cursor: pointer; transition: all .2s; text-transform: uppercase;
+  }
+  .dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,200,66,0.5); }
+  .dl-btn:disabled { opacity: 0.7; cursor: wait; transform: none; }
+
+  .gif-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #00e5ff, #0090ff);
+    border: none; border-radius: 8px;
+    color: #0b0e2a; font-size: 14px; font-weight: 700;
+    letter-spacing: 1px; padding: 10px 22px;
+    cursor: pointer; transition: all .2s; text-transform: uppercase;
+  }
+  .gif-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.5); }
+  .gif-btn:disabled { opacity: 0.7; cursor: wait; transform: none; }
+
+  /* Progress bar */
+  #gifProgress {
+    display: none;
+    width: 1920px;
+    max-width: calc(100vw - 48px);
+    background: rgba(255,255,255,0.05);
+    border-left: 1px solid rgba(255,255,255,0.1);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    padding: 10px 20px;
+  }
+  #gifProgress .prog-label {
+    color: #00e5ff; font-size: 12px; letter-spacing: 2px; margin-bottom: 6px; font-weight: 700;
+  }
+  #gifProgress .prog-bar-bg {
+    height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden;
+  }
+  #gifProgress .prog-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, #00e5ff, #0090ff);
+    width: 0%; transition: width 0.2s ease;
+    box-shadow: 0 0 10px rgba(0,229,255,0.6);
+  }
+
+  /* ── BANNER WRAPPER ── */
+  #banner-wrapper {
+    width: 1920px;
+    max-width: calc(100vw - 48px);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+  }
+  #banner {
+    width: 1920px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+    background: #08091e;
+    transform-origin: top left;
+  }
+
+  /* ── BG LAYERS ── */
+  .bg-glow {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 1000px 750px at 65% 58%, rgba(25,35,120,0.6) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 400px at 15% 85%, rgba(255,107,26,0.09) 0%, transparent 60%),
+      radial-gradient(ellipse 400px 350px at 90% 12%, rgba(0,229,255,0.07) 0%, transparent 55%),
+      linear-gradient(155deg, #09102e 0%, #060a1e 55%, #0c0820 100%);
+  }
+  .bg-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.022) 1px, transparent 1px);
+    background-size: 90px 90px;
+    animation: gridScroll 28s linear infinite;
+  }
+  @keyframes gridScroll { to { background-position: 90px 90px; } }
+  .bg-scan {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.035) 3px, rgba(0,0,0,0.035) 4px);
+    pointer-events: none;
+  }
+
+  #pCanvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+
+  /* ── GRAIN FIELD ── */
+  .grain-field { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+  .grain {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 8px rgba(255,255,255,0.95);
+    opacity: 0;
+    animation: grainFly var(--d) var(--delay) ease-out infinite;
+  }
+  @keyframes grainFly {
+    0%   { opacity: 0; transform: translate(0,0) scale(1) rotate(0deg); }
+    12%  { opacity: 1; }
+    70%  { opacity: 0.55; }
+    100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.25) rotate(var(--tr)); }
+  }
+
+  /* ── CORNERS ── */
+  .corner { position: absolute; width: 90px; height: 90px; pointer-events: none; }
+  .c-tl { top: 44px; left: 44px; border-top: 3px solid rgba(245,200,66,0.45); border-left: 3px solid rgba(245,200,66,0.45); }
+  .c-tr { top: 44px; right: 44px; border-top: 3px solid rgba(245,200,66,0.45); border-right: 3px solid rgba(245,200,66,0.45); }
+  .c-bl { bottom: 44px; left: 44px; border-bottom: 3px solid rgba(245,200,66,0.45); border-left: 3px solid rgba(245,200,66,0.45); }
+  .c-br { bottom: 44px; right: 44px; border-bottom: 3px solid rgba(245,200,66,0.45); border-right: 3px solid rgba(245,200,66,0.45); }
+  .h-line { position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(245,200,66,0.12) 25%, rgba(245,200,66,0.12) 75%, transparent); }
+  .h-line-t { top: 130px; } .h-line-b { bottom: 130px; }
+
+  /* ── CONTENT ── */
+  .content {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 150px;
+  }
+
+  /* LEFT TEXT */
+  .left-text {
+    flex: 0 0 auto;
+    animation: slideL 1s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes slideL { from { opacity:0; transform:translateX(-80px); } to { opacity:1; transform:translateX(0); } }
+
+  .eyebrow-tag {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 24px; letter-spacing: 9px;
+    color: #00e5ff;
+    text-shadow: 0 0 22px rgba(0,229,255,0.8);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .eyebrow-tag::before { content:''; display:block; width:55px; height:2px; background:#00e5ff; box-shadow:0 0 12px #00e5ff; }
+
+  .main-title { font-family: 'Bebas Neue', cursive; line-height: 0.88; margin-bottom: 30px; }
+  .t-lawden {
+    display: block; font-size: 185px;
+    color: #f0ede8;
+    text-shadow: 7px 7px 0 rgba(0,0,0,0.45), 0 0 70px rgba(240,237,232,0.15);
+    letter-spacing: -3px;
+  }
+  .t-bhojyam {
+    display: block; font-size: 185px;
+    background: linear-gradient(90deg, #f5c842 0%, #ff9520 45%, #ff2d78 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    filter: drop-shadow(0 0 50px rgba(245,200,66,0.55));
+    letter-spacing: -3px;
+  }
+
+  .deco-line {
+    width: 420px; height: 2px;
+    background: linear-gradient(90deg, rgba(245,200,66,0.9), rgba(255,107,26,0.5), transparent);
+    margin: 28px 0; position: relative;
+  }
+  .deco-line::after {
+    content:''; position:absolute; left:0; top:-4px;
+    width:10px; height:10px; border-radius:50%;
+    background:#f5c842; box-shadow:0 0 18px #f5c842;
+    animation: dotSlide 3.5s ease-in-out infinite;
+  }
+  @keyframes dotSlide { 0%{left:0} 50%{left:calc(100% - 10px)} 100%{left:0} }
+
+  .ticker-row { display:flex; align-items:center; gap:22px; }
+  .ticker-main {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 80px; letter-spacing: 5px;
+    background: linear-gradient(90deg, #f5c842, #ff6b1a);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(245,200,66,0.7));
+    animation: tickerPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes tickerPulse {
+    0%,100% { filter: drop-shadow(0 0 30px rgba(245,200,66,0.7)); }
+    50% { filter: drop-shadow(0 0 70px rgba(245,200,66,1)) drop-shadow(0 0 120px rgba(255,107,26,0.6)); }
+  }
+  .dot-div { width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,0.25); }
+  .tagline { font-family:'Boogaloo',cursive; font-size:34px; color:rgba(240,237,232,0.45); letter-spacing:1px; }
+
+  /* SCENE RIGHT */
+  .right-scene {
+    flex: 0 0 auto; width:700px; height:920px;
+    position: relative;
+    display: flex; align-items: flex-end; justify-content: center;
+    animation: slideR 1s 0.2s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes slideR { from { opacity:0; transform:translateX(80px); } to { opacity:1; transform:translateX(0); } }
+
+  .spotlight {
+    position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    width:540px; height:750px;
+    background: radial-gradient(ellipse at 50% 92%, rgba(245,200,66,0.2) 0%, transparent 65%);
+    pointer-events:none;
+  }
+  .platform {
+    position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+    width:370px; height:55px; border-radius:50%;
+    background:radial-gradient(ellipse, rgba(245,200,66,0.6) 0%, transparent 72%);
+    filter:blur(16px);
+    animation:platBreath 3s ease-in-out infinite;
+  }
+  @keyframes platBreath { 0%,100%{transform:translateX(-50%) scaleX(1); opacity:.75} 50%{transform:translateX(-50%) scaleX(1.3); opacity:1} }
+
+  .rays {
+    position:absolute; bottom:210px; left:50%; transform:translateX(-50%);
+    width:750px; height:750px;
+    pointer-events:none;
+    animation: raysRot 22s linear infinite;
+  }
+  @keyframes raysRot { to { transform:translateX(-50%) rotate(360deg); } }
+  .ray {
+    position:absolute; top:50%; left:50%;
+    width:375px; height:2px;
+    transform-origin:left center;
+    border-radius:2px;
+    background:linear-gradient(90deg,rgba(245,200,66,0.2),transparent);
+  }
+
+  /* MASCOT */
+  .mascot-wrap {
+    position:absolute;
+    top: 35%;
+    animation: floatBig 4.5s ease-in-out infinite;
+    transform-style:preserve-3d;
+    filter:drop-shadow(0 50px 100px rgba(245,200,66,0.35));
+  }
+  @keyframes floatBig {
+    0%,100%{ transform:translateY(0) rotateY(-7deg) rotateX(1deg); }
+    25%    { transform:translateY(-24px) rotateY(9deg) rotateX(2deg); }
+    50%    { transform:translateY(-40px) rotateY(-6deg) rotateX(-2deg); }
+    75%    { transform:translateY(-20px) rotateY(11deg) rotateX(1deg); }
+  }
+
+  .mascot { width:280px; position:relative; transform-style:preserve-3d; }
+
+  /* CAP */
+  .s-cap-top {
+    width:150px; height:50px; margin:0 auto;
+    border-radius:32px 32px 0 0;
+    background:linear-gradient(145deg, #ffe066 0%, #f5c842 45%, #ff9520 100%);
+    box-shadow:inset -8px 0 18px rgba(0,0,0,0.22), inset 6px 0 14px rgba(255,255,255,0.35), 0 -6px 35px rgba(245,200,66,0.55);
+    position:relative; overflow:hidden;
+  }
+  .s-cap-top::before {
+    content:''; position:absolute; left:15px; top:8px;
+    width:32px; height:25px; border-radius:50%;
+    background:rgba(255,255,255,0.38); transform:skewX(-10deg);
+  }
+  .s-cap-holes {
+    width:150px; height:30px; margin:0 auto;
+    background:linear-gradient(135deg,#e8c020,#f5c842,#d4a800);
+    display:flex; align-items:center; justify-content:center; gap:11px;
+    box-shadow:inset 0 3px 8px rgba(0,0,0,0.18);
+  }
+  .s-cap-hole { width:9px; height:9px; border-radius:50%; background:#0b0e2a; box-shadow:inset 1px 1px 3px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.1); }
+  .s-cap-neck {
+    width:165px; height:26px; margin:0 auto;
+    background:linear-gradient(90deg,#c8c4bb,#f0ede8,#b8b4ac,#e8e4dc,#c8c4bb);
+    border-radius:8px 8px 0 0;
+    box-shadow:inset 0 -5px 10px rgba(0,0,0,0.12), 0 -3px 10px rgba(0,0,0,0.15);
+  }
+
+  /* BODY */
+  .s-body {
+    width:226px; height:312px; margin:0 auto;
+    border-radius:35px 35px 65px 65px;
+    background:linear-gradient(158deg, #ffffff 0%, #eceae3 28%, #d0cdc6 58%, #aeaaa2 100%);
+    position:relative; overflow:hidden;
+    box-shadow:
+      inset -20px 0 38px rgba(0,0,0,0.18),
+      inset 14px 0 30px rgba(255,255,255,0.75),
+      inset 0 -22px 44px rgba(0,0,0,0.12),
+      12px 35px 70px rgba(0,0,0,0.5),
+      0 0 90px rgba(245,200,66,0.12);
+  }
+  .s-body::before {
+    content:''; position:absolute; left:22px; top:28px;
+    width:55px; height:185px; border-radius:50%;
+    background:linear-gradient(180deg,rgba(255,255,255,0.75) 0%,transparent 100%);
+    transform:skewX(-8deg);
+  }
+  .s-body::after {
+    content:''; position:absolute; right:9px; top:32px;
+    width:20px; height:220px; border-radius:50%;
+    background:linear-gradient(180deg,rgba(245,200,66,0.28) 0%,transparent 100%);
+  }
+
+  /* FACE */
+  .s-face {
+    position:absolute; top:38px; left:0; right:0;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .s-eyebrows { display:flex; gap:18px; margin-bottom:7px; }
+  .s-eb { width:54px; height:8px; background:#3a3a3a; border-radius:4px; }
+  .s-eb.l { transform:rotate(-11deg) translateY(4px); }
+  .s-eb.r { transform:rotate(22deg) translateY(-8px); width:42px; }
+
+  .s-glasses {
+    display:flex; align-items:center; gap:9px;
+    filter:drop-shadow(0 7px 18px rgba(0,0,0,0.65));
+    position:relative;
+  }
+  .s-arm-l,.s-arm-r { width:28px; height:5px; background:#181c40; border-radius:2px; }
+  .s-arm-l { transform:rotate(6deg); }
+  .s-arm-r { transform:rotate(-6deg); }
+  .s-lens {
+    width:60px; height:35px;
+    border-radius:11px 11px 18px 18px;
+    background:linear-gradient(158deg,rgba(12,18,52,0.97) 0%,rgba(6,8,22,1) 58%,rgba(22,32,85,0.9) 100%);
+    border:3px solid #181c40;
+    position:relative; overflow:hidden;
+    box-shadow:inset -7px 0 14px rgba(0,0,0,0.6), inset 3px 3px 9px rgba(60,80,200,0.2), 0 7px 18px rgba(0,0,0,0.5);
+  }
+  .s-lens::before {
+    content:''; position:absolute; top:4px; left:7px;
+    width:22px; height:10px; border-radius:50%;
+    background:rgba(255,255,255,0.22); transform:skewX(-12deg);
+  }
+  .s-lens::after {
+    content:''; position:absolute; top:0; left:-50%; width:35%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
+    animation:lensGlint 5s ease-in-out infinite;
+  }
+  @keyframes lensGlint { 0%,75%,100%{left:-50%} 38%{left:150%} }
+  .s-bridge { width:16px; height:5px; background:#181c40; border-radius:3px; margin-top:6px; }
+
+  .s-blushes { display:flex; gap:36px; margin-top:9px; }
+  .s-blush { width:24px; height:12px; border-radius:50%; background:rgba(255,80,80,0.28); filter:blur(5px); }
+
+  .s-smirk {
+    width:46px; height:22px;
+    border:4.5px solid #3a3a3a; border-top:none;
+    border-radius:0 0 30px 30px;
+    margin-top:11px; margin-left:14px; position:relative;
+  }
+  .s-smirk::after {
+    content:''; position:absolute; left:-9px; top:-4px;
+    width:9px; height:9px;
+    border-right:4.5px solid #3a3a3a; border-radius:0 5px 0 0;
+  }
+
+  /* LABEL */
+  .s-label {
+    position:absolute; bottom:56px; left:0; right:0; height:78px;
+    background:linear-gradient(135deg,#f5c842 0%,#ff9520 50%,#ff6b1a 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    box-shadow:inset 0 3px 10px rgba(0,0,0,0.2), inset 0 -3px 10px rgba(0,0,0,0.12);
+  }
+  .s-label-name { font-family:'Bebas Neue',cursive; font-size:28px; letter-spacing:6px; color:#0b0e2a; text-shadow:0 1px 2px rgba(255,255,255,0.2); }
+  .s-label-sub { font-size:10px; font-family:monospace; font-weight:700; letter-spacing:2px; color:rgba(10,14,42,0.6); }
+
+  /* HOLES */
+  .s-holes { position:absolute; inset:0; pointer-events:none; }
+  .s-hole { position:absolute; width:11px; height:11px; border-radius:50%; background:rgba(0,0,0,0.2); box-shadow:inset 1px 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.25); }
+
+  /* HALO */
+  .s-halo {
+    position:absolute; top:-20px; left:50%; transform:translateX(-50%);
+    width:150px; height:26px; border-radius:50%;
+    border:3px solid rgba(245,200,66,0.72);
+    box-shadow:0 0 35px rgba(245,200,66,0.55), inset 0 0 18px rgba(245,200,66,0.15);
+    animation:haloSpin 9s linear infinite;
+  }
+  @keyframes haloSpin { from{transform:translateX(-50%) rotateX(72deg) rotateZ(0)} to{transform:translateX(-50%) rotateX(72deg) rotateZ(360deg)} }
+
+  /* BADGES */
+  .badge {
+    position:absolute; font-family:'Bebas Neue',cursive; border-radius:11px; letter-spacing:2px; cursor:default;
+  }
+  .badge-1 {
+    top:90px; right:-40px; padding:10px 22px;
+    background:linear-gradient(135deg,#ff2d78,#ff6b1a); color:white; font-size:20px;
+    transform:rotate(14deg); box-shadow:0 0 30px rgba(255,45,120,0.6);
+    animation:badgeBob 2.2s ease-in-out infinite; --rot:14deg;
+  }
+  .badge-2 {
+    bottom:150px; left:-60px; padding:9px 20px;
+    background:linear-gradient(135deg,#00e5ff,#0090ff); color:#0b0e2a; font-size:18px;
+    transform:rotate(-12deg); box-shadow:0 0 22px rgba(0,229,255,0.5);
+    animation:badgeBob 2.8s 0.5s ease-in-out infinite; --rot:-12deg;
+  }
+  @keyframes badgeBob {
+    0%,100%{ transform:rotate(var(--rot)) scale(1); }
+    50%    { transform:rotate(calc(var(--rot) - 4deg)) scale(1.08); }
+  }
+
+  /* BOTTOM TEXT */
+  .chain-badge {
+    position:absolute; bottom:55px; left:50%; transform:translateX(-50%);
+    font-family:'Bebas Neue',cursive; font-size:20px; letter-spacing:5px;
+    color:rgba(255,255,255,0.2);
+    display:flex; align-items:center; gap:12px; white-space:nowrap; z-index:3;
+  }
+  .chain-badge::before,.chain-badge::after { content:''; display:block; width:70px; height:1px; background:rgba(255,255,255,0.12); }
+</style>
+</head>
+<body>
+
+<!-- <div class="toolbar">
+  <div class="toolbar-info">Resolution: <span>1920 × 1080px</span> &nbsp;·&nbsp; Animated HTML Banner</div>
+  <div class="btn-group">
+    <button class="dl-btn" id="dlBtn">⬇ Download PNG</button>
+    <button class="gif-btn" id="gifBtn">🎬 Download GIF (5s)</button>
+  </div>
+</div> -->
+
+<!-- <div id="gifProgress">
+  <div class="prog-label" id="progLabel">CAPTURING FRAMES — 0%</div>
+  <div class="prog-bar-bg"><div class="prog-bar-fill" id="progFill"></div></div>
+</div> -->
+
+<div id="banner-wrapper">
+<div id="banner">
+
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-scan"></div>
+  <canvas id="pCanvas"></canvas>
+  <div class="grain-field" id="grainField"></div>
+
+  <div class="corner c-tl"></div>
+  <div class="corner c-tr"></div>
+  <div class="corner c-bl"></div>
+  <div class="corner c-br"></div>
+  <div class="h-line h-line-t"></div>
+  <div class="h-line h-line-b"></div>
+
+  <div class="content">
+    <!-- LEFT -->
+    <div class="left-text">
+      <div class="eyebrow-tag">ON SOLANA</div>
+      <h1 class="main-title">
+        <span class="t-lawden">LAWDEN</span>
+        <span class="t-bhojyam">BHOJYAM</span>
+      </h1>
+      <div class="deco-line"></div>
+      <div class="ticker-row">
+        <span class="ticker-main">$NAMAK</span>
+        <div class="dot-div"></div>
+        <span class="tagline">Season Your Portfolio 🧂</span>
+      </div>
+    </div>
+
+    <!-- RIGHT SCENE -->
+    <div class="right-scene">
+      <div class="spotlight"></div>
+      <div class="platform"></div>
+      <div class="rays" id="raysEl"></div>
+
+      <div class="mascot-wrap">
+        <div class="mascot">
+          <div class="s-halo"></div>
+          <div class="s-cap-top"></div>
+          <div class="s-cap-holes">
+            <div class="s-cap-hole"></div><div class="s-cap-hole"></div>
+            <div class="s-cap-hole"></div><div class="s-cap-hole"></div>
+            <div class="s-cap-hole"></div><div class="s-cap-hole"></div>
+          </div>
+          <div class="s-cap-neck"></div>
+          <div class="s-body">
+            <div class="s-face">
+              <div class="s-eyebrows">
+                <div class="s-eb l"></div>
+                <div class="s-eb r"></div>
+              </div>
+              <div class="s-glasses">
+                <div class="s-arm-l"></div>
+                <div class="s-lens"></div>
+                <div class="s-bridge"></div>
+                <div class="s-lens"></div>
+                <div class="s-arm-r"></div>
+              </div>
+              <div class="s-blushes"><div class="s-blush"></div><div class="s-blush"></div></div>
+              <div class="s-smirk"></div>
+            </div>
+            <div class="s-holes" id="bodyHoles"></div>
+            <div class="s-label">
+              <span class="s-label-name">NAMAK</span>
+              <span class="s-label-sub">$NAMAK · SOLANA · MEME COIN</span>
+            </div>
+          </div>
+          <div class="badge badge-1">SALTY AF 😎</div>
+          <div class="badge badge-2">0% TAX 🔥</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chain-badge">POWERED BY SOLANA</div>
+</div>
+</div>
+
+<!-- Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+
+/* ── SCALE ── */
+function scaleBanner() {
+  const wrapper = document.getElementById('banner-wrapper');
+  const banner  = document.getElementById('banner');
+  const maxW = Math.min(window.innerWidth - 48, 1920);
+  const scale = maxW / 1920;
+  banner.style.transform = `scale(${scale})`;
+  wrapper.style.height = (1080 * scale) + 'px';
+}
+scaleBanner();
+window.addEventListener('resize', scaleBanner);
+
+/* ── RAYS ── */
+const raysEl = document.getElementById('raysEl');
+for (let i = 0; i < 18; i++) {
+  const r = document.createElement('div');
+  r.className = 'ray';
+  r.style.transform = `rotate(${i * 20}deg)`;
+  raysEl.appendChild(r);
+}
+
+/* ── BODY HOLES ── */
+const holesEl = document.getElementById('bodyHoles');
+[[30,9],[52,9],[74,9],[41,21],[63,21],[30,33],[52,33],[74,33],
+ [41,45],[63,45],[30,57],[52,57],[74,57],[41,69],[63,69]].forEach(([l,t]) => {
+  const h = document.createElement('div');
+  h.className = 's-hole';
+  h.style.left = l+'%'; h.style.top = t+'%';
+  holesEl.appendChild(h);
+});
+
+/* ── SALT GRAINS ── */
+const gf  = document.getElementById('grainField');
+const cx = 1400, cy = 348;
+for (let i = 0; i < 60; i++) {
+  const g = document.createElement('div');
+  g.className = 'grain';
+  const size = 4 + Math.random() * 10;
+  const angle = -Math.PI * 0.15 - Math.random() * Math.PI * 0.7;
+  const dist  = 80 + Math.random() * 380;
+  const spreadX = (Math.random()-0.5)*100;
+  const spreadY = (Math.random()-0.5)*40;
+  g.style.cssText = `
+    left:${cx + spreadX}px; top:${cy + spreadY}px;
+    width:${size}px; height:${size}px;
+    --tx:${Math.cos(angle)*dist}px;
+    --ty:${Math.sin(angle)*dist}px;
+    --tr:${(Math.random()-0.5)*800}deg;
+    --d:${1.4 + Math.random()*2.4}s;
+    --delay:${Math.random()*3.5}s;
+  `;
+  gf.appendChild(g);
+}
+for (let i = 0; i < 24; i++) {
+  const g = document.createElement('div');
+  g.className = 'grain';
+  const size = 3 + Math.random() * 5;
+  g.style.cssText = `
+    left:${1170 + Math.random()*230}px; top:${260 + Math.random()*420}px;
+    width:${size}px; height:${size}px;
+    --tx:${(Math.random()-0.5)*180}px;
+    --ty:${-50 - Math.random()*140}px;
+    --tr:${(Math.random()-0.5)*400}deg;
+    --d:${2.2 + Math.random()*3}s;
+    --delay:${Math.random()*4.5}s;
+    box-shadow:0 0 ${size}px rgba(255,255,255,0.7);
+  `;
+  gf.appendChild(g);
+}
+
+/* ── PARTICLE CANVAS ── */
+const canvas = document.getElementById('pCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = 1920; canvas.height = 1080;
+
+const STARS = Array.from({length:220}, () => ({
+  x:Math.random()*1920, y:Math.random()*1080,
+  r:Math.random()*2.5+0.4,
+  vx:(Math.random()-0.5)*0.22, vy:(Math.random()-0.5)*0.22,
+  a:Math.random(), da:(Math.random()-0.5)*0.006,
+  col:Math.random()>0.65 ? '#f5c842' : Math.random()>0.5 ? '#00e5ff' : '#ffffff'
+}));
+const SHARDS = Array.from({length:20}, () => ({
+  x:Math.random()*1920, y:Math.random()*1080,
+  sz:5+Math.random()*9,
+  vx:(Math.random()-0.5)*0.25, vy:-0.12-Math.random()*0.35,
+  rot:Math.random()*Math.PI*2, rs:(Math.random()-0.5)*0.012,
+  a:0.08+Math.random()*0.25
+}));
+
+let animRunning = true;
+function drawBg() {
+  if (!animRunning) return;
+  ctx.clearRect(0,0,1920,1080);
+  STARS.forEach(s => {
+    s.x+=s.vx; s.y+=s.vy; s.a+=s.da;
+    if(s.a<=0||s.a>=1) s.da*=-1;
+    if(s.x<0) s.x=1920; if(s.x>1920) s.x=0;
+    if(s.y<0) s.y=1080; if(s.y>1080) s.y=0;
+    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=s.col; ctx.globalAlpha=s.a*0.65; ctx.fill();
+  });
+  SHARDS.forEach(s => {
+    s.x+=s.vx; s.y+=s.vy; s.rot+=s.rs;
+    if(s.y<-30){s.y=1110; s.x=Math.random()*1920;}
+    ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.rot);
+    ctx.globalAlpha=s.a; ctx.fillStyle='#ffffff';
+    ctx.fillRect(-s.sz/2,-s.sz/2,s.sz,s.sz); ctx.restore();
+  });
+  ctx.globalAlpha=1;
+  requestAnimationFrame(drawBg);
+}
+requestAnimationFrame(drawBg);
+
+/* ── PNG DOWNLOAD ── */
+document.getElementById('dlBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('dlBtn');
+  btn.textContent = '⏳ Capturing...';
+  btn.disabled = true;
+
+  const banner  = document.getElementById('banner');
+  const wrapper = document.getElementById('banner-wrapper');
+
+  banner.style.transform = 'scale(1)';
+  wrapper.style.height = '1080px';
+  wrapper.style.overflow = 'visible';
+  await new Promise(r => setTimeout(r, 300));
+
+  try {
+    const snap = await html2canvas(banner, {
+      width: 1920, height: 1080, scale: 1,
+      useCORS: true, allowTaint: true,
+      backgroundColor: '#08091e', logging: false
+    });
+    const link = document.createElement('a');
+    link.download = 'lawden-bhojyam-namak-1920x1080.png';
+    link.href = snap.toDataURL('image/png');
+    link.click();
+    btn.textContent = '✅ Downloaded!';
+  } catch(e) {
+    console.error(e);
+    btn.textContent = '❌ Error';
+  }
+  wrapper.style.overflow = 'hidden';
+  scaleBanner();
+  setTimeout(() => { btn.textContent = '⬇ Download PNG'; btn.disabled = false; }, 3000);
+});
+
+/* ── GIF DOWNLOAD (5 seconds, ~10 fps = 50 frames, scaled to 960×540) ── */
+document.getElementById('gifBtn').addEventListener('click', async () => {
+  const gifBtn = document.getElementById('gifBtn');
+  const dlBtn  = document.getElementById('dlBtn');
+  const progEl = document.getElementById('gifProgress');
+  const progFill  = document.getElementById('progFill');
+  const progLabel = document.getElementById('progLabel');
+
+  gifBtn.disabled = true; dlBtn.disabled = true;
+  gifBtn.textContent = '⏳ Recording…';
+  progEl.style.display = 'block';
+
+  const banner  = document.getElementById('banner');
+  const wrapper = document.getElementById('banner-wrapper');
+
+  // Scale up to 1:1 for capture
+  banner.style.transform = 'scale(1)';
+  wrapper.style.height = '1080px';
+  wrapper.style.overflow = 'visible';
+  await new Promise(r => setTimeout(r, 400));
+
+  const GIF_W = 960, GIF_H = 540;
+  const DURATION = 5000;  // 5 seconds
+  const FPS = 10;
+  const FRAME_DELAY = 1000 / FPS;
+  const TOTAL_FRAMES = Math.round(DURATION / FRAME_DELAY); // 50
+
+  /* ── Inline GIF encoder (no external worker needed) ── */
+  // Lightweight GIF89a encoder
+  function GIFEncoder() {
+    const frames = [];
+    let w = 0, h = 0;
+
+    function setSize(width, height) { w = width; h = height; }
+
+    function addFrame(imageData, delay) {
+      frames.push({ imageData, delay });
+    }
+
+    function encode() {
+      // Build colour table from all frames (sample pixels)
+      // Use a simple 256-colour palette approach via median cut
+      const palette = buildPalette(frames, 256);
+      const chunks = [];
+
+      // GIF header
+      chunks.push(str2ab('GIF89a'));
+      // Logical screen descriptor
+      const lsd = new Uint8Array(7);
+      lsd[0] = w & 0xFF; lsd[1] = (w >> 8) & 0xFF;
+      lsd[2] = h & 0xFF; lsd[3] = (h >> 8) & 0xFF;
+      lsd[4] = 0xF7; // global CT flag, color resolution, 256 colours
+      lsd[5] = 0;    // background
+      lsd[6] = 0;    // aspect ratio
+      chunks.push(lsd.buffer);
+      // Global colour table (256 * 3 bytes)
+      chunks.push(paletteToBuffer(palette));
+      // Netscape loop extension
+      chunks.push(netscapeExt(0));
+
+      for (const frame of frames) {
+        // Graphic control ext (for delay)
+        chunks.push(graphicControlExt(Math.round(frame.delay / 10)));
+        // Image descriptor
+        chunks.push(imageDescriptor(w, h));
+        // Image data (LZW compressed)
+        const indices = quantize(frame.imageData, palette, w, h);
+        chunks.push(lzwCompress(indices, 8));
+      }
+
+      chunks.push(new Uint8Array([0x3B]).buffer); // GIF trailer
+
+      // Merge all chunks
+      const totalLen = chunks.reduce((s, c) => s + (c instanceof ArrayBuffer ? c.byteLength : c.length || c.byteLength), 0);
+      const out = new Uint8Array(totalLen);
+      let off = 0;
+      for (const c of chunks) {
+        const arr = c instanceof ArrayBuffer ? new Uint8Array(c) : new Uint8Array(c);
+        out.set(arr, off);
+        off += arr.length;
+      }
+      return out.buffer;
+    }
+
+    return { setSize, addFrame, encode };
+  }
+
+  function str2ab(str) {
+    const ab = new ArrayBuffer(str.length);
+    const v = new Uint8Array(ab);
+    for (let i = 0; i < str.length; i++) v[i] = str.charCodeAt(i);
+    return ab;
+  }
+
+  function paletteToBuffer(palette) {
+    const buf = new Uint8Array(256 * 3);
+    for (let i = 0; i < palette.length; i++) {
+      buf[i*3]   = palette[i][0];
+      buf[i*3+1] = palette[i][1];
+      buf[i*3+2] = palette[i][2];
+    }
+    return buf.buffer;
+  }
+
+  function netscapeExt(loops) {
+    return new Uint8Array([
+      0x21, 0xFF, 11,
+      0x4E,0x45,0x54,0x53,0x43,0x41,0x50,0x45,0x32,0x2E,0x30,
+      3, 1, loops & 0xFF, (loops >> 8) & 0xFF, 0
+    ]).buffer;
+  }
+
+  function graphicControlExt(delayCs) {
+    return new Uint8Array([
+      0x21, 0xF9, 4,
+      0x00,                    // disposal: do not dispose
+      delayCs & 0xFF, (delayCs >> 8) & 0xFF,
+      0,                       // transparent index (none)
+      0
+    ]).buffer;
+  }
+
+  function imageDescriptor(w, h) {
+    const b = new Uint8Array(10);
+    b[0] = 0x2C;
+    // left, top = 0
+    b[1]=b[2]=b[3]=b[4]=0;
+    b[5] = w & 0xFF; b[6] = (w>>8) & 0xFF;
+    b[7] = h & 0xFF; b[8] = (h>>8) & 0xFF;
+    b[9] = 0x00; // no local CT
+    return b.buffer;
+  }
+
+  // Build a 256-entry palette by sampling from the first frame
+  function buildPalette(frames, maxColors) {
+    const sample = frames[0].imageData;
+    const pixels = new Map();
+    const step = 8;
+    for (let i = 0; i < sample.data.length; i += 4 * step) {
+      const r = sample.data[i]   & 0xE0;
+      const g = sample.data[i+1] & 0xE0;
+      const b = sample.data[i+2] & 0xC0;
+      pixels.set((r<<16)|(g<<8)|b, [r,g,b]);
+    }
+    const palette = [...pixels.values()].slice(0, maxColors);
+    while (palette.length < maxColors) palette.push([0,0,0]);
+    return palette;
+  }
+
+  // Map each pixel to nearest palette index
+  function quantize(imageData, palette, w, h) {
+    const indices = new Uint8Array(w * h);
+    const data = imageData.data;
+    for (let i = 0; i < w * h; i++) {
+      const r = data[i*4], g = data[i*4+1], b = data[i*4+2];
+      let best = 0, bestD = Infinity;
+      for (let j = 0; j < palette.length; j++) {
+        const dr = r - palette[j][0];
+        const dg = g - palette[j][1];
+        const db = b - palette[j][2];
+        const d = dr*dr + dg*dg + db*db;
+        if (d < bestD) { bestD = d; best = j; if (d === 0) break; }
+      }
+      indices[i] = best;
+    }
+    return indices;
+  }
+
+  // Minimal LZW compression for GIF
+  function lzwCompress(indices, minCodeSize) {
+    const clearCode = 1 << minCodeSize;
+    const eofCode = clearCode + 1;
+    let codeSize = minCodeSize + 1;
+    let nextCode = eofCode + 1;
+    const table = new Map();
+    const resetTable = () => { table.clear(); nextCode = eofCode + 1; codeSize = minCodeSize + 1; };
+
+    const output = [];
+    let bits = 0, bitBuf = 0;
+
+    const emit = code => {
+      bitBuf |= code << bits;
+      bits += codeSize;
+      while (bits >= 8) { output.push(bitBuf & 0xFF); bitBuf >>= 8; bits -= 8; }
+    };
+
+    emit(clearCode);
+    resetTable();
+
+    let str = [indices[0]];
+    for (let i = 1; i < indices.length; i++) {
+      const extended = [...str, indices[i]];
+      const key = extended.join(',');
+      if (table.has(key)) {
+        str = extended;
+      } else {
+        emit(str.length === 1 ? str[0] : table.get(str.join(',')));
+        table.set(key, nextCode++);
+        if (nextCode > (1 << codeSize) && codeSize < 12) codeSize++;
+        if (nextCode > 4096) { emit(clearCode); resetTable(); }
+        str = [indices[i]];
+      }
+    }
+    emit(str.length === 1 ? str[0] : table.get(str.join(',')));
+    emit(eofCode);
+    if (bits > 0) output.push(bitBuf & 0xFF);
+
+    // Package into sub-blocks
+    const result = [minCodeSize];
+    for (let i = 0; i < output.length; i += 255) {
+      const block = output.slice(i, i + 255);
+      result.push(block.length, ...block);
+    }
+    result.push(0); // block terminator
+    return new Uint8Array(result).buffer;
+  }
+
+  /* ── Capture frames ── */
+  const offscreenCanvas = document.createElement('canvas');
+  offscreenCanvas.width  = GIF_W;
+  offscreenCanvas.height = GIF_H;
+  const offCtx = offscreenCanvas.getContext('2d');
+
+  const encoder = GIFEncoder();
+  encoder.setSize(GIF_W, GIF_H);
+
+  let framesCaptured = 0;
+
+  async function captureFrame() {
+    const snap = await html2canvas(banner, {
+      width: 1920, height: 1080, scale: 1,
+      useCORS: true, allowTaint: true,
+      backgroundColor: '#08091e', logging: false
+    });
+    offCtx.drawImage(snap, 0, 0, GIF_W, GIF_H);
+    const imageData = offCtx.getImageData(0, 0, GIF_W, GIF_H);
+    encoder.addFrame(imageData, FRAME_DELAY);
+    framesCaptured++;
+    const pct = Math.round((framesCaptured / TOTAL_FRAMES) * 100);
+    progFill.style.width  = pct + '%';
+    progLabel.textContent = `CAPTURING FRAMES — ${pct}%`;
+  }
+
+  // Capture frames spaced evenly over 5 seconds
+  for (let i = 0; i < TOTAL_FRAMES; i++) {
+    await captureFrame();
+    await new Promise(r => setTimeout(r, FRAME_DELAY));
+  }
+
+  progLabel.textContent = 'ENCODING GIF…';
+  await new Promise(r => setTimeout(r, 50));
+
+  try {
+    const gifBuffer = encoder.encode();
+    const blob = new Blob([gifBuffer], { type: 'image/gif' });
+    const url  = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = 'lawden-bhojyam-namak-5sec.gif';
+    link.href = url;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    gifBtn.textContent = '✅ GIF Downloaded!';
+    progLabel.textContent = 'GIF READY — DOWNLOAD STARTED';
+    progFill.style.width = '100%';
+  } catch(e) {
+    console.error(e);
+    gifBtn.textContent = '❌ Error';
+    progLabel.textContent = 'ERROR: ' + e.message;
+  }
+
+  wrapper.style.overflow = 'hidden';
+  scaleBanner();
+  setTimeout(() => {
+    gifBtn.textContent = '🎬 Download GIF (5s)';
+    gifBtn.disabled = false;
+    dlBtn.disabled  = false;
+    progEl.style.display = 'none';
+    progFill.style.width = '0%';
+  }, 4000);
+});
+
+</script>
+</body>
+</html>
