@@ -1,981 +1,2074 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lawden Bhojyam | $NAMAK</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Boogaloo&family=Righteous&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --salt-white: #f0ede8;
-    --gold: #f5c842;
-    --gold-bright: #ffe066;
-    --hot-orange: #ff6b1a;
-    --deep-navy: #0b0e2a;
-    --mid-navy: #111740;
-    --accent-cyan: #00e5ff;
-    --accent-pink: #ff2d78;
-    --accent-green: #39ff14;
-    --glass-dark: rgba(20,25,60,0.55);
-    --glass-border: rgba(255,255,255,0.10);
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lawden Bhojyam | $NAMAK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Boogaloo&family=Righteous&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --salt-white: #f0ede8;
+      --gold: #f5c842;
+      --gold-bright: #ffe066;
+      --hot-orange: #ff6b1a;
+      --deep-navy: #0b0e2a;
+      --mid-navy: #111740;
+      --accent-cyan: #00e5ff;
+      --accent-pink: #ff2d78;
+      --accent-green: #39ff14;
+      --glass-dark: rgba(20, 25, 60, 0.55);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Space Mono', monospace;
-    background: var(--deep-navy);
-    color: var(--salt-white);
-    overflow-x: hidden;
-    cursor: none;
-  }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ── CUSTOM CURSOR ── */
-  #cursor {
-    position: fixed; top: 0; left: 0; z-index: 9999;
-    width: 18px; height: 18px; border-radius: 50%;
-    background: var(--gold); pointer-events: none;
-    transform: translate(-50%,-50%);
-    transition: transform .12s ease, background .2s;
-    mix-blend-mode: difference;
-  }
-  #cursor-ring {
-    position: fixed; top: 0; left: 0; z-index: 9998;
-    width: 42px; height: 42px; border-radius: 50%;
-    border: 2px solid var(--accent-cyan);
-    pointer-events: none;
-    transform: translate(-50%,-50%);
-    transition: transform .22s ease, width .2s, height .2s;
-  }
+    html {
+      scroll-behavior: smooth;
+    }
 
-  /* ── BACKGROUND CANVAS ── */
-  #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    body {
+      font-family: "Space Mono", monospace;
+      background: var(--deep-navy);
+      color: var(--salt-white);
+      overflow-x: hidden;
+      cursor: none;
+    }
 
-  /* ── NOISE OVERLAY ── */
-  body::after {
-    content: '';
-    position: fixed; inset: 0; z-index: 1;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity: 0.35; pointer-events: none;
-  }
+    a {
+      text-decoration: none;
+      color: #ffffff9c;
+    }
 
-  #app { position: relative; z-index: 2; }
+    /* ── CUSTOM CURSOR ── */
+    #cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--gold);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition:
+        transform 0.12s ease,
+        background 0.2s;
+      mix-blend-mode: difference;
+    }
 
-  /* ══════════════════════════════
+    #cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9998;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition:
+        transform 0.22s ease,
+        width 0.2s,
+        height 0.2s;
+    }
+
+    /* ── BACKGROUND CANVAS ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    #app {
+      position: relative;
+      z-index: 2;
+      padding-top: 75px;
+    }
+
+    /* ══════════════════════════════
      NAV
   ══════════════════════════════ */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 1.2rem 5vw;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(11,14,42,0.6);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    animation: navDrop .6s cubic-bezier(0.22,1,0.36,1) both;
-  }
-  @keyframes navDrop {
-    from { transform: translateY(-100%); opacity: 0; }
-    to   { transform: translateY(0); opacity: 1; }
-  }
-  .nav-logo {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 1.6rem; letter-spacing: 2px;
-    background: linear-gradient(90deg, var(--gold), var(--hot-orange));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    transition: filter .25s;
-  }
-  .nav-logo:hover { filter: drop-shadow(0 0 18px rgba(245,200,66,0.9)); }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.2rem 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(11, 14, 42, 0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      animation: navDrop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
 
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a {
-    font-family: 'Bebas Neue', cursive; font-size: 1rem; letter-spacing: 2px;
-    color: rgba(240,237,232,0.6); text-decoration: none; transition: color .2s, text-shadow .2s;
-    position: relative;
-  }
-  .nav-links a::after {
-    content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
-    height: 2px; background: var(--gold); transform: scaleX(0);
-    transition: transform .25s;
-  }
-  .nav-links a:hover { color: var(--gold); text-shadow: 0 0 14px rgba(245,200,66,0.7); }
-  .nav-links a:hover::after { transform: scaleX(1); }
+    @keyframes navDrop {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
 
-  /* Banner link — special style */
-  .nav-links a.banner-link {
-    color: var(--accent-cyan);
-    border: 1px solid rgba(0,229,255,0.3);
-    padding: 4px 14px; border-radius: 6px;
-    transition: all .25s;
-  }
-  .nav-links a.banner-link:hover {
-    color: var(--deep-navy);
-    background: var(--accent-cyan);
-    box-shadow: 0 0 24px rgba(0,229,255,0.6), 0 0 50px rgba(0,229,255,0.3);
-    text-shadow: none;
-  }
-  .nav-links a.banner-link::after { display: none; }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
 
-  .nav-cta {
-    font-family: 'Bebas Neue', cursive; font-size: 1rem; letter-spacing: 2px;
-    padding: 8px 22px; border: 2px solid var(--gold); border-radius: 8px;
-    color: var(--gold); background: transparent; cursor: pointer; transition: all .2s;
-  }
-  .nav-cta:hover {
-    background: var(--gold); color: var(--deep-navy);
-    box-shadow: 0 0 30px rgba(245,200,66,0.6), 0 0 60px rgba(245,200,66,0.3);
-  }
+    .nav-logo {
+      font-family: "Bebas Neue", cursive;
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--hot-orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: filter 0.25s;
+    }
 
-  /* ══════════════════════════════
+    .nav-logo:hover {
+      filter: drop-shadow(0 0 18px rgba(245, 200, 66, 0.9));
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: "Bebas Neue", cursive;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: rgba(240, 237, 232, 0.6);
+      text-decoration: none;
+      transition:
+        color 0.2s,
+        text-shadow 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transition: transform 0.25s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+      text-shadow: 0 0 14px rgba(245, 200, 66, 0.7);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* Banner link — special style */
+    .nav-links a.banner-link {
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      padding: 4px 14px;
+      border-radius: 6px;
+      transition: all 0.25s;
+    }
+
+    .nav-links a.banner-link:hover {
+      color: var(--deep-navy);
+      background: var(--accent-cyan);
+      box-shadow:
+        0 0 24px rgba(0, 229, 255, 0.6),
+        0 0 50px rgba(0, 229, 255, 0.3);
+      text-shadow: none;
+    }
+
+    .nav-links a.banner-link::after {
+      display: none;
+    }
+
+    .nav-cta {
+      font-family: "Bebas Neue", cursive;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      padding: 8px 22px;
+      border: 2px solid var(--gold);
+      border-radius: 8px;
+      color: var(--gold);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold);
+      color: var(--deep-navy);
+      box-shadow:
+        0 0 30px rgba(245, 200, 66, 0.6),
+        0 0 60px rgba(245, 200, 66, 0.3);
+    }
+
+    /* ══════════════════════════════
      HERO SECTION
   ══════════════════════════════ */
-  .hero {
-    min-height: 100vh;
-    display: grid; grid-template-columns: 1fr 1fr;
-    align-items: center; gap: 2rem; padding: 0 6vw;
-    position: relative; overflow: hidden;
-  }
-  .hero::before {
-    content: ''; position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    animation: gridScroll 20s linear infinite; pointer-events: none;
-  }
-  @keyframes gridScroll { 0% { background-position: 0 0; } 100% { background-position: 60px 60px; } }
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 2rem;
+      padding: 0 6vw;
+      position: relative;
+      overflow: hidden;
+    }
 
-  /* ── LEFT TEXT ── */
-  .hero-text { position: relative; }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridScroll 20s linear infinite;
+      pointer-events: none;
+    }
 
-  .ticker-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, var(--hot-orange), var(--accent-pink));
-    color: #fff; font-family: 'Bebas Neue', cursive; font-size: 1rem;
-    letter-spacing: 3px; padding: 6px 18px; border-radius: 999px; margin-bottom: 1.2rem;
-    box-shadow: 0 0 20px rgba(255,107,26,0.6);
-    animation: tickerPulse 2.5s ease-in-out infinite;
-    transition: box-shadow .25s;
-  }
-  .ticker-badge:hover { box-shadow: 0 0 40px rgba(255,107,26,1), 0 0 80px rgba(255,45,120,0.6); }
-  @keyframes tickerPulse {
-    0%,100% { box-shadow: 0 0 20px rgba(255,107,26,0.6); }
-    50% { box-shadow: 0 0 40px rgba(255,107,26,1), 0 0 80px rgba(255,45,120,0.5); }
-  }
+    @keyframes gridScroll {
+      0% {
+        background-position: 0 0;
+      }
 
-  .hero-title {
-    font-family: 'Bebas Neue', cursive;
-    font-size: clamp(3.5rem, 9vw, 8rem); line-height: 0.9;
-    letter-spacing: 2px; text-transform: uppercase;
-  }
-  .hero-title span.line1 {
-    display: block; color: var(--salt-white);
-    text-shadow: 0 0 30px rgba(240,237,232,0.4), 4px 4px 0 rgba(0,0,0,0.5);
-    animation: slideInLeft 0.8s cubic-bezier(0.22,1,0.36,1) both;
-    transition: text-shadow .3s;
-  }
-  .hero-title:hover span.line1 { text-shadow: 0 0 60px rgba(240,237,232,0.7), 4px 4px 0 rgba(0,0,0,0.5); }
-  .hero-title span.line2 {
-    display: block;
-    background: linear-gradient(90deg, var(--gold), var(--hot-orange), var(--accent-pink));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    animation: slideInLeft 0.9s 0.1s cubic-bezier(0.22,1,0.36,1) both;
-    filter: drop-shadow(0 0 20px rgba(245,200,66,0.6));
-    transition: filter .3s;
-  }
-  .hero-title:hover span.line2 { filter: drop-shadow(0 0 40px rgba(245,200,66,1)); }
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-60px) skewX(-5deg); }
-    to   { opacity: 1; transform: translateX(0) skewX(0); }
-  }
+      100% {
+        background-position: 60px 60px;
+      }
+    }
 
-  .hero-tagline {
-    font-family: 'Boogaloo', cursive;
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    color: rgba(240,237,232,0.7); margin: 1.4rem 0 2rem; line-height: 1.5;
-    animation: fadeUp 1s 0.4s both;
-  }
-  .hero-tagline em { color: var(--accent-cyan); font-style: normal; text-shadow: 0 0 10px var(--accent-cyan); }
+    /* ── LEFT TEXT ── */
+    .hero-text {
+      position: relative;
+    }
 
-  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 1s 0.6s both; }
+    .ticker-badge {
+      display: inline-block;
+      background: linear-gradient(135deg,
+          var(--hot-orange),
+          var(--accent-pink));
+      color: #fff;
+      font-family: "Bebas Neue", cursive;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 0 20px rgba(255, 107, 26, 0.6);
+      animation: tickerPulse 2.5s ease-in-out infinite;
+      transition: box-shadow 0.25s;
+    }
 
-  .btn-primary {
-    font-family: 'Bebas Neue', cursive; font-size: 1.3rem; letter-spacing: 2px;
-    padding: 14px 36px; border: none; border-radius: 8px;
-    background: linear-gradient(135deg, var(--gold), var(--hot-orange));
-    color: var(--deep-navy); cursor: pointer; position: relative; overflow: hidden;
-    transition: transform .2s, box-shadow .2s;
-    box-shadow: 0 4px 30px rgba(245,200,66,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
-  }
-  .btn-primary::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.35) 100%);
-    transform: translateX(-100%) skewX(-15deg); transition: transform .4s ease;
-  }
-  .btn-primary:hover::before { transform: translateX(200%) skewX(-15deg); }
-  .btn-primary:hover {
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 10px 50px rgba(245,200,66,0.8), 0 0 80px rgba(245,200,66,0.3);
-  }
+    .ticker-badge:hover {
+      box-shadow:
+        0 0 40px rgba(255, 107, 26, 1),
+        0 0 80px rgba(255, 45, 120, 0.6);
+    }
 
-  .btn-secondary {
-    font-family: 'Bebas Neue', cursive; font-size: 1.3rem; letter-spacing: 2px;
-    padding: 12px 34px; border: 2px solid var(--accent-cyan); border-radius: 8px;
-    background: transparent; color: var(--accent-cyan); cursor: pointer;
-    transition: all .25s;
-    box-shadow: 0 0 15px rgba(0,229,255,0.2), inset 0 0 15px rgba(0,229,255,0.05);
-    position: relative; overflow: hidden;
-  }
-  .btn-secondary::before {
-    content: ''; position: absolute; inset: 0;
-    background: var(--accent-cyan); transform: scaleX(0);
-    transform-origin: left; transition: transform .3s ease;
-  }
-  .btn-secondary:hover::before { transform: scaleX(1); }
-  .btn-secondary:hover {
-    color: var(--deep-navy);
-    box-shadow: 0 0 40px rgba(0,229,255,0.8), 0 0 80px rgba(0,229,255,0.3);
-  }
-  .btn-secondary span { position: relative; z-index: 1; }
+    @keyframes tickerPulse {
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(255, 107, 26, 0.6);
+      }
 
-  /* stats strip */
-  .stats-strip { display: flex; gap: 2rem; margin-top: 2.5rem; animation: fadeUp 1s 0.8s both; }
-  .stat { text-align: left; }
-  .stat-val {
-    font-family: 'Bebas Neue', cursive; font-size: 2rem; color: var(--gold);
-    display: block; text-shadow: 0 0 20px rgba(245,200,66,0.6);
-    transition: text-shadow .25s;
-  }
-  .stat:hover .stat-val { text-shadow: 0 0 40px rgba(245,200,66,1), 0 0 80px rgba(245,200,66,0.5); }
-  .stat-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(240,237,232,0.45); }
+      50% {
+        box-shadow:
+          0 0 40px rgba(255, 107, 26, 1),
+          0 0 80px rgba(255, 45, 120, 0.5);
+      }
+    }
 
-  /* ── RIGHT COL – MASCOT SCENE ── */
-  .hero-scene {
-    display: flex; justify-content: center; align-items: center;
-    position: relative; height: 580px; perspective: 900px;
-  }
+    .hero-title {
+      font-family: "Bebas Neue", cursive;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      line-height: 0.9;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
 
-  /* Glow platform */
-  .platform {
-    position: absolute; bottom: 40px;
-    width: 260px; height: 50px; border-radius: 50%;
-    background: radial-gradient(ellipse at center, rgba(245,200,66,0.6) 0%, transparent 70%);
-    filter: blur(12px);
-    animation: platformPulse 3s ease-in-out infinite;
-  }
-  @keyframes platformPulse {
-    0%,100% { transform: scaleX(1); opacity: 0.7; }
-    50% { transform: scaleX(1.3); opacity: 1; }
-  }
+    .hero-title span.line1 {
+      display: block;
+      color: var(--salt-white);
+      text-shadow:
+        0 0 30px rgba(240, 237, 232, 0.4),
+        4px 4px 0 rgba(0, 0, 0, 0.5);
+      animation: slideInLeft 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+      transition: text-shadow 0.3s;
+    }
 
-  /* ── MASCOT WRAPPER ── */
-  .mascot-wrap {
-    position: absolute; bottom: 55px;
-    animation: float 4.5s ease-in-out infinite;
-    transform-style: preserve-3d;
-    filter: drop-shadow(0 40px 80px rgba(245,200,66,0.4));
-  }
-  @keyframes float {
-    0%,100%{ transform:translateY(0) rotateY(-7deg) rotateX(1deg); }
-    25%    { transform:translateY(-22px) rotateY(9deg) rotateX(2deg); }
-    50%    { transform:translateY(-38px) rotateY(-6deg) rotateX(-2deg); }
-    75%    { transform:translateY(-18px) rotateY(11deg) rotateX(1deg); }
-  }
+    .hero-title:hover span.line1 {
+      text-shadow:
+        0 0 60px rgba(240, 237, 232, 0.7),
+        4px 4px 0 rgba(0, 0, 0, 0.5);
+    }
 
-  .mascot { width: 240px; position: relative; transform-style: preserve-3d; }
+    .hero-title span.line2 {
+      display: block;
+      background: linear-gradient(90deg,
+          var(--gold),
+          var(--hot-orange),
+          var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: slideInLeft 0.9s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+      filter: drop-shadow(0 0 20px rgba(245, 200, 66, 0.6));
+      transition: filter 0.3s;
+    }
 
-  /* CAP (head) — banner scale */
-  .s-cap-top {
-    width: 150px; height: 50px; margin: 0 auto;
-    border-radius: 32px 32px 0 0;
-    background: linear-gradient(145deg, #ffe066 0%, #f5c842 45%, #ff9520 100%);
-    box-shadow: inset -8px 0 18px rgba(0,0,0,0.22), inset 6px 0 14px rgba(255,255,255,0.35), 0 -6px 35px rgba(245,200,66,0.55);
-    position: relative; overflow: hidden;
-  }
-  .s-cap-top::before {
-    content: ''; position: absolute; left: 15px; top: 8px;
-    width: 32px; height: 25px; border-radius: 50%;
-    background: rgba(255,255,255,0.38); transform: skewX(-10deg);
-  }
-  .s-cap-holes {
-    width: 150px; height: 28px; margin: 0 auto;
-    background: linear-gradient(135deg, #e8c020, #f5c842, #d4a800);
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    box-shadow: inset 0 3px 8px rgba(0,0,0,0.18);
-  }
-  .s-cap-hole { width: 8px; height: 8px; border-radius: 50%; background: #0b0e2a; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.1); }
-  .s-cap-neck {
-    width: 165px; height: 24px; margin: 0 auto;
-    background: linear-gradient(90deg, #c8c4bb, #f0ede8, #b8b4ac, #e8e4dc, #c8c4bb);
-    border-radius: 8px 8px 0 0;
-    box-shadow: inset 0 -5px 10px rgba(0,0,0,0.12), 0 -3px 10px rgba(0,0,0,0.15);
-  }
+    .hero-title:hover span.line2 {
+      filter: drop-shadow(0 0 40px rgba(245, 200, 66, 1));
+    }
 
-  /* BODY */
-  .s-body {
-    width: 210px; height: 290px; margin: 0 auto;
-    border-radius: 32px 32px 60px 60px;
-    background: linear-gradient(158deg, #ffffff 0%, #eceae3 28%, #d0cdc6 58%, #aeaaa2 100%);
-    position: relative; overflow: hidden;
-    box-shadow:
-      inset -18px 0 35px rgba(0,0,0,0.18),
-      inset 12px 0 28px rgba(255,255,255,0.75),
-      inset 0 -20px 40px rgba(0,0,0,0.12),
-      10px 30px 60px rgba(0,0,0,0.5),
-      0 0 80px rgba(245,200,66,0.12);
-  }
-  .s-body::before {
-    content: ''; position: absolute; left: 20px; top: 26px;
-    width: 50px; height: 170px; border-radius: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, transparent 100%);
-    transform: skewX(-8deg);
-  }
-  .s-body::after {
-    content: ''; position: absolute; right: 8px; top: 28px;
-    width: 18px; height: 200px; border-radius: 50%;
-    background: linear-gradient(180deg, rgba(245,200,66,0.25) 0%, transparent 100%);
-  }
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-60px) skewX(-5deg);
+      }
 
-  /* FACE */
-  .s-face {
-    position: absolute; top: 34px; left: 0; right: 0;
-    display: flex; flex-direction: column; align-items: center;
-  }
-  .s-eyebrows { display: flex; gap: 14px; margin-bottom: 6px; }
-  .s-eb { width: 50px; height: 7px; background: #3a3a3a; border-radius: 4px; }
-  .s-eb.l { transform: rotate(-11deg) translateY(4px); }
-  .s-eb.r { transform: rotate(22deg) translateY(-8px); width: 38px; }
+      to {
+        opacity: 1;
+        transform: translateX(0) skewX(0);
+      }
+    }
 
-  .s-glasses {
-    display: flex; align-items: center; gap: 9px;
-    filter: drop-shadow(0 7px 18px rgba(0,0,0,0.65)); position: relative;
-  }
-  .s-arm-l, .s-arm-r { width: 24px; height: 4px; background: #181c40; border-radius: 2px; }
-  .s-arm-l { transform: rotate(6deg); }
-  .s-arm-r { transform: rotate(-6deg); }
-  .s-lens {
-    width: 56px; height: 33px; border-radius: 10px 10px 16px 16px;
-    background: linear-gradient(158deg, rgba(12,18,52,0.97) 0%, rgba(6,8,22,1) 58%, rgba(22,32,85,0.9) 100%);
-    border: 3px solid #181c40; position: relative; overflow: hidden;
-    box-shadow: inset -6px 0 12px rgba(0,0,0,0.6), inset 3px 3px 8px rgba(60,80,200,0.2), 0 6px 16px rgba(0,0,0,0.5);
-  }
-  .s-lens::before {
-    content: ''; position: absolute; top: 4px; left: 7px;
-    width: 20px; height: 9px; border-radius: 50%;
-    background: rgba(255,255,255,0.22); transform: skewX(-12deg);
-  }
-  .s-lens::after {
-    content: ''; position: absolute; top: 0; left: -50%; width: 35%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    animation: lensGlint 5s ease-in-out infinite;
-  }
-  @keyframes lensGlint { 0%,75%,100%{left:-50%} 38%{left:150%} }
-  .s-bridge { width: 14px; height: 4px; background: #181c40; border-radius: 3px; margin-top: 5px; }
+    .hero-tagline {
+      font-family: "Boogaloo", cursive;
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      color: rgba(240, 237, 232, 0.7);
+      margin: 1.4rem 0 2rem;
+      line-height: 1.5;
+      animation: fadeUp 1s 0.4s both;
+    }
 
-  .s-blushes { display: flex; gap: 32px; margin-top: 8px; }
-  .s-blush { width: 22px; height: 11px; border-radius: 50%; background: rgba(255,80,80,0.28); filter: blur(4px); }
+    .hero-tagline em {
+      color: var(--accent-cyan);
+      font-style: normal;
+      text-shadow: 0 0 10px var(--accent-cyan);
+    }
 
-  .s-smirk {
-    width: 42px; height: 20px;
-    border: 4px solid #3a3a3a; border-top: none;
-    border-radius: 0 0 28px 28px; margin-top: 10px; margin-left: 12px; position: relative;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
-  }
-  .s-smirk::after {
-    content: ''; position: absolute; left: -8px; top: -4px;
-    width: 8px; height: 8px; border-right: 4px solid #3a3a3a; border-radius: 0 5px 0 0;
-  }
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeUp 1s 0.6s both;
+    }
 
-  /* LABEL */
-  .s-label {
-    position: absolute; bottom: 52px; left: 0; right: 0; height: 72px;
-    background: linear-gradient(135deg, #f5c842 0%, #ff9520 50%, #ff6b1a 100%);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    box-shadow: inset 0 3px 10px rgba(0,0,0,0.2), inset 0 -3px 10px rgba(0,0,0,0.12);
-  }
-  .s-label-name { font-family: 'Bebas Neue', cursive; font-size: 26px; letter-spacing: 6px; color: #0b0e2a; text-shadow: 0 1px 2px rgba(255,255,255,0.2); }
-  .s-label-sub { font-size: 9px; font-family: monospace; font-weight: 700; letter-spacing: 2px; color: rgba(10,14,42,0.65); }
+    .btn-primary {
+      font-family: "Bebas Neue", cursive;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      padding: 14px 36px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--hot-orange));
+      color: var(--deep-navy);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+      box-shadow:
+        0 4px 30px rgba(245, 200, 66, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
 
-  /* HOLES */
-  .s-holes { position: absolute; inset: 0; pointer-events: none; }
-  .s-hole { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: rgba(0,0,0,0.2); box-shadow: inset 1px 1px 4px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.25); }
+    .btn-primary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+          transparent 40%,
+          rgba(255, 255, 255, 0.35) 100%);
+      transform: translateX(-100%) skewX(-15deg);
+      transition: transform 0.4s ease;
+    }
 
-  /* HALO */
-  .s-halo {
-    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-    width: 140px; height: 24px; border-radius: 50%;
-    border: 3px solid rgba(245,200,66,0.72);
-    box-shadow: 0 0 35px rgba(245,200,66,0.55), inset 0 0 18px rgba(245,200,66,0.15);
-    animation: haloSpin 9s linear infinite;
-  }
-  @keyframes haloSpin { from{transform:translateX(-50%) rotateX(72deg) rotateZ(0)} to{transform:translateX(-50%) rotateX(72deg) rotateZ(360deg)} }
+    .btn-primary:hover::before {
+      transform: translateX(200%) skewX(-15deg);
+    }
 
-  /* ── GRAIN FIELD ── */
-  .grain-field { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
-  .grain {
-    position: absolute; border-radius: 50%; background: white;
-    box-shadow: 0 0 8px rgba(255,255,255,0.95); opacity: 0;
-    animation: grainFly var(--d) var(--delay) ease-out infinite;
-  }
-  @keyframes grainFly {
-    0%   { opacity: 0; transform: translate(0,0) scale(1) rotate(0deg); }
-    12%  { opacity: 1; }
-    70%  { opacity: 0.55; }
-    100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.25) rotate(var(--tr)); }
-  }
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow:
+        0 10px 50px rgba(245, 200, 66, 0.8),
+        0 0 80px rgba(245, 200, 66, 0.3);
+    }
 
-  /* Salt particles */
-  .salt-particles { position: absolute; inset: 0; pointer-events: none; }
-  .sp {
-    position: absolute; width: 5px; height: 5px; background: white; border-radius: 50%;
-    opacity: 0; box-shadow: 0 0 6px rgba(255,255,255,0.8);
-    animation: saltFloat var(--dur) var(--delay) ease-in-out infinite;
-  }
-  @keyframes saltFloat {
-    0%   { opacity: 0; transform: translate(0, 0) scale(0.5); }
-    20%  { opacity: 0.9; }
-    100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.2); }
-  }
+    .btn-img {
+      margin-left: 0%;
+      transform: translateX(5px) translateY(2px);
+      /* position: ab; */
+    }
 
-  /* Mascot badges */
-  .mascot-badge {
-    position: absolute; bottom: 50%; right: 10%; z-index: 1;
-    background: linear-gradient(135deg, var(--accent-pink), var(--hot-orange));
-    color: white; font-family: 'Bebas Neue', cursive; font-size: 0.9rem;
-    letter-spacing: 1px; padding: 6px 14px; border-radius: 8px;
-    box-shadow: 0 0 20px rgba(255,45,120,0.6);
-    animation: badgeBounce 2s ease-in-out infinite;
-    transform: rotate(15deg); white-space: nowrap;
-    transition: box-shadow .25s;
-  }
-  .mascot-badge:hover { box-shadow: 0 0 40px rgba(255,45,120,1), 0 0 80px rgba(255,45,120,0.4); }
-  @keyframes badgeBounce {
-    0%,100% { transform: rotate(15deg) scale(1); }
-    50%     { transform: rotate(12deg) scale(1.08); }
-  }
-  .mascot-badge2 {
-    position: absolute; bottom: 80px; left: 0; z-index: 1;
-    background: linear-gradient(135deg, var(--accent-cyan), rgba(0,229,255,0.5));
-    color: var(--deep-navy); font-family: 'Bebas Neue', cursive; font-size: 0.85rem;
-    letter-spacing: 1px; padding: 5px 12px; border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0,229,255,0.5);
-    animation: badgeBounce2 2.5s 0.5s ease-in-out infinite;
-    transform: rotate(-10deg); white-space: nowrap;
-    transition: box-shadow .25s;
-  }
-  .mascot-badge2:hover { box-shadow: 0 0 35px rgba(0,229,255,1), 0 0 70px rgba(0,229,255,0.4); }
-  @keyframes badgeBounce2 {
-    0%,100% { transform: rotate(-10deg) scale(1); }
-    50%     { transform: rotate(-8deg) scale(1.06); }
-  }
+    .btn-secondary {
+      font-family: "Bebas Neue", cursive;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      padding: 12px 34px;
+      border: 2px solid var(--accent-cyan);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--accent-cyan);
+      cursor: pointer !important;
+      transition: all 0.25s;
+      box-shadow:
+        0 0 15px rgba(0, 229, 255, 0.2),
+        inset 0 0 15px rgba(0, 229, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
 
-  /* Shine rays */
-  .shine-rays {
-    position: absolute; top: 50%; left: 50%; width: 400px; height: 400px;
-    transform: translate(-50%,-50%); pointer-events: none;
-    animation: raysRotate 15s linear infinite;
-  }
-  @keyframes raysRotate { to { transform: translate(-50%,-50%) rotate(360deg); } }
-  .ray {
-    position: absolute; top: 50%; left: 50%; width: 200px; height: 2px;
-    transform-origin: left center;
-    background: linear-gradient(90deg, rgba(245,200,66,0.4), transparent); border-radius: 2px;
-  }
+    .btn-secondary::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--accent-cyan);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
 
-  /* ══════════════════════════════
+    .btn-secondary:hover::before {
+      transform: scaleX(1);
+    }
+
+    .btn-secondary:hover {
+      color: var(--deep-navy) !important;
+      box-shadow:
+        0 0 40px rgba(0, 229, 255, 0.8),
+        0 0 80px rgba(0, 229, 255, 0.3);
+    }
+
+    .btn-secondary span {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* stats strip */
+    .stats-strip {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2.5rem;
+      animation: fadeUp 1s 0.8s both;
+    }
+
+    .stat {
+      text-align: left;
+    }
+
+    .stat-val {
+      font-family: "Bebas Neue", cursive;
+      font-size: 2rem;
+      color: var(--gold);
+      display: block;
+      text-shadow: 0 0 20px rgba(245, 200, 66, 0.6);
+      transition: text-shadow 0.25s;
+    }
+
+    .stat:hover .stat-val {
+      text-shadow:
+        0 0 40px rgba(245, 200, 66, 1),
+        0 0 80px rgba(245, 200, 66, 0.5);
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(240, 237, 232, 0.45);
+    }
+
+    /* ── RIGHT COL – MASCOT SCENE ── */
+    .hero-scene {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      height: 580px;
+      perspective: 900px;
+    }
+
+    /* Glow platform */
+    .platform {
+      position: absolute;
+      bottom: 40px;
+      width: 260px;
+      height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center,
+          rgba(245, 200, 66, 0.6) 0%,
+          transparent 70%);
+      filter: blur(12px);
+      animation: platformPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes platformPulse {
+
+      0%,
+      100% {
+        transform: scaleX(1);
+        opacity: 0.7;
+      }
+
+      50% {
+        transform: scaleX(1.3);
+        opacity: 1;
+      }
+    }
+
+    /* ── MASCOT WRAPPER ── */
+    .mascot-wrap {
+      position: absolute;
+      bottom: 55px;
+      animation: float 4.5s ease-in-out infinite;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 40px 80px rgba(245, 200, 66, 0.4));
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) rotateY(-7deg) rotateX(1deg);
+      }
+
+      25% {
+        transform: translateY(-22px) rotateY(9deg) rotateX(2deg);
+      }
+
+      50% {
+        transform: translateY(-38px) rotateY(-6deg) rotateX(-2deg);
+      }
+
+      75% {
+        transform: translateY(-18px) rotateY(11deg) rotateX(1deg);
+      }
+    }
+
+    .mascot {
+      width: 240px;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: scale(.8) translateY(-30px);
+
+    }
+
+    /* CAP (head) — banner scale */
+    .s-cap-top {
+      width: 150px;
+      height: 50px;
+      margin: 0 auto;
+      border-radius: 32px 32px 0 0;
+      background: linear-gradient(145deg,
+          #ffe066 0%,
+          #f5c842 45%,
+          #ff9520 100%);
+      box-shadow:
+        inset -8px 0 18px rgba(0, 0, 0, 0.22),
+        inset 6px 0 14px rgba(255, 255, 255, 0.35),
+        0 -6px 35px rgba(245, 200, 66, 0.55);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .s-cap-top::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 8px;
+      width: 32px;
+      height: 25px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.38);
+      transform: skewX(-10deg);
+    }
+
+    .s-cap-holes {
+      width: 150px;
+      height: 28px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #e8c020, #f5c842, #d4a800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .s-cap-hole {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0b0e2a;
+      box-shadow:
+        inset 1px 1px 3px rgba(0, 0, 0, 0.7),
+        0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .s-cap-neck {
+      width: 165px;
+      height: 24px;
+      margin: 0 auto;
+      background: linear-gradient(90deg,
+          #c8c4bb,
+          #f0ede8,
+          #b8b4ac,
+          #e8e4dc,
+          #c8c4bb);
+      border-radius: 8px 8px 0 0;
+      box-shadow:
+        inset 0 -5px 10px rgba(0, 0, 0, 0.12),
+        0 -3px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* BODY */
+    .s-body {
+      width: 210px;
+      height: 290px;
+      margin: 0 auto;
+      border-radius: 32px 32px 60px 60px;
+      background: linear-gradient(158deg,
+          #ffffff 0%,
+          #eceae3 28%,
+          #d0cdc6 58%,
+          #aeaaa2 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset -18px 0 35px rgba(0, 0, 0, 0.18),
+        inset 12px 0 28px rgba(255, 255, 255, 0.75),
+        inset 0 -20px 40px rgba(0, 0, 0, 0.12),
+        10px 30px 60px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(245, 200, 66, 0.12);
+    }
+
+    .s-body::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      top: 26px;
+      width: 50px;
+      height: 170px;
+      border-radius: 50%;
+      background: linear-gradient(180deg,
+          rgba(255, 255, 255, 0.75) 0%,
+          transparent 100%);
+      transform: skewX(-8deg);
+    }
+
+    .s-body::after {
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 28px;
+      width: 18px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(180deg,
+          rgba(245, 200, 66, 0.25) 0%,
+          transparent 100%);
+    }
+
+    /* FACE */
+    .s-face {
+      position: absolute;
+      top: 34px;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .s-eyebrows {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+
+    .s-eb {
+      width: 50px;
+      height: 7px;
+      background: #3a3a3a;
+      border-radius: 4px;
+    }
+
+    .s-eb.l {
+      transform: rotate(-11deg) translateY(4px);
+    }
+
+    .s-eb.r {
+      transform: rotate(22deg) translateY(-8px);
+      width: 38px;
+    }
+
+    .s-glasses {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      filter: drop-shadow(0 7px 18px rgba(0, 0, 0, 0.65));
+      position: relative;
+    }
+
+    .s-arm-l,
+    .s-arm-r {
+      width: 24px;
+      height: 4px;
+      background: #181c40;
+      border-radius: 2px;
+    }
+
+    .s-arm-l {
+      transform: rotate(6deg);
+    }
+
+    .s-arm-r {
+      transform: rotate(-6deg);
+    }
+
+    .s-lens {
+      width: 56px;
+      height: 33px;
+      border-radius: 10px 10px 16px 16px;
+      background: linear-gradient(158deg,
+          rgba(12, 18, 52, 0.97) 0%,
+          rgba(6, 8, 22, 1) 58%,
+          rgba(22, 32, 85, 0.9) 100%);
+      border: 3px solid #181c40;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset -6px 0 12px rgba(0, 0, 0, 0.6),
+        inset 3px 3px 8px rgba(60, 80, 200, 0.2),
+        0 6px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .s-lens::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 7px;
+      width: 20px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      transform: skewX(-12deg);
+    }
+
+    .s-lens::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 35%;
+      height: 100%;
+      background: linear-gradient(90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent);
+      animation: lensGlint 5s ease-in-out infinite;
+    }
+
+    @keyframes lensGlint {
+
+      0%,
+      75%,
+      100% {
+        left: -50%;
+      }
+
+      38% {
+        left: 150%;
+      }
+    }
+
+    .s-bridge {
+      width: 14px;
+      height: 4px;
+      background: #181c40;
+      border-radius: 3px;
+      margin-top: 5px;
+    }
+
+    .s-blushes {
+      display: flex;
+      gap: 32px;
+      margin-top: 8px;
+    }
+
+    .s-blush {
+      width: 22px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(255, 80, 80, 0.28);
+      filter: blur(4px);
+    }
+
+    .s-smirk {
+      width: 42px;
+      height: 20px;
+      border: 4px solid #3a3a3a;
+      border-top: none;
+      border-radius: 0 0 28px 28px;
+      margin-top: 10px;
+      margin-left: 12px;
+      position: relative;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+    }
+
+    .s-smirk::after {
+      content: "";
+      position: absolute;
+      left: -8px;
+      top: -4px;
+      width: 8px;
+      height: 8px;
+      border-right: 4px solid #3a3a3a;
+      border-radius: 0 5px 0 0;
+    }
+
+    /* LABEL */
+    .s-label {
+      position: absolute;
+      bottom: 52px;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: linear-gradient(135deg,
+          #f5c842 0%,
+          #ff9520 50%,
+          #ff6b1a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        inset 0 3px 10px rgba(0, 0, 0, 0.2),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .s-label-name {
+      font-family: "Bebas Neue", cursive;
+      font-size: 26px;
+      letter-spacing: 6px;
+      color: #0b0e2a;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+    }
+
+    .s-label-sub {
+      font-size: 9px;
+      font-family: monospace;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: rgba(10, 14, 42, 0.65);
+    }
+
+    /* HOLES */
+    .s-holes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .s-hole {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow:
+        inset 1px 1px 4px rgba(0, 0, 0, 0.5),
+        0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    /* HALO */
+    .s-halo {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 24px;
+      border-radius: 50%;
+      border: 3px solid rgba(245, 200, 66, 0.72);
+      box-shadow:
+        0 0 35px rgba(245, 200, 66, 0.55),
+        inset 0 0 18px rgba(245, 200, 66, 0.15);
+      animation: haloSpin 9s linear infinite;
+    }
+
+    @keyframes haloSpin {
+      from {
+        transform: translateX(-50%) rotateX(72deg) rotateZ(0);
+      }
+
+      to {
+        transform: translateX(-50%) rotateX(72deg) rotateZ(360deg);
+      }
+    }
+
+    /* ── GRAIN FIELD ── */
+    .grain-field {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .grain {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.95);
+      opacity: 0;
+      animation: grainFly var(--d) var(--delay) ease-out infinite;
+    }
+
+    @keyframes grainFly {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+      }
+
+      12% {
+        opacity: 1;
+      }
+
+      70% {
+        opacity: 0.55;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0.25) rotate(var(--tr));
+      }
+    }
+
+    /* Salt particles */
+    .salt-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .sp {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+      animation: saltFloat var(--dur) var(--delay) ease-in-out infinite;
+    }
+
+    @keyframes saltFloat {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5);
+      }
+
+      20% {
+        opacity: 0.9;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0.2);
+      }
+    }
+
+    /* Mascot badges */
+    .mascot-badge {
+      position: absolute;
+      top: 30%;
+      right: 15%;
+      z-index: 1;
+      background: linear-gradient(135deg,
+          var(--accent-pink),
+          var(--hot-orange));
+      color: white;
+      font-family: "Bebas Neue", cursive;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(255, 45, 120, 0.6);
+      animation: badgeBounce 2s ease-in-out infinite;
+      transform: rotate(15deg);
+      white-space: nowrap;
+      transition: box-shadow 0.25s;
+    }
+
+    .mascot-badge:hover {
+      box-shadow:
+        0 0 40px rgba(255, 45, 120, 1),
+        0 0 80px rgba(255, 45, 120, 0.4);
+    }
+
+    @keyframes badgeBounce {
+
+      0%,
+      100% {
+        transform: rotate(15deg) scale(1);
+      }
+
+      50% {
+        transform: rotate(12deg) scale(1.08);
+      }
+    }
+
+    .mascot-badge2 {
+      position: absolute;
+      bottom: 30%;
+      left: 6%;
+      z-index: 1;
+      background: linear-gradient(135deg,
+          var(--accent-cyan),
+          rgba(0, 229, 255, 0.5));
+      color: var(--deep-navy);
+      font-family: "Bebas Neue", cursive;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+      animation: badgeBounce2 2.5s 0.5s ease-in-out infinite;
+      transform: rotate(-10deg);
+      white-space: nowrap;
+      transition: box-shadow 0.25s;
+    }
+
+    .mascot-badge2:hover {
+      box-shadow:
+        0 0 35px rgba(0, 229, 255, 1),
+        0 0 70px rgba(0, 229, 255, 0.4);
+    }
+
+    @keyframes badgeBounce2 {
+
+      0%,
+      100% {
+        transform: rotate(-10deg) scale(1);
+      }
+
+      50% {
+        transform: rotate(-8deg) scale(1.06);
+      }
+    }
+
+    /* Shine rays */
+    .shine-rays {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      width: 400px;
+      height: 400px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: raysRotate 15s linear infinite;
+    }
+
+    @keyframes raysRotate {
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .ray {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 2px;
+      transform-origin: left center;
+      background: linear-gradient(90deg,
+          rgba(245, 200, 66, 0.4),
+          transparent);
+      border-radius: 2px;
+    }
+
+    /* ══════════════════════════════
      SCROLL MARQUEE
   ══════════════════════════════ */
-  .marquee-section {
-    background: linear-gradient(90deg, var(--gold), var(--hot-orange), var(--accent-pink), var(--gold));
-    padding: 14px 0; overflow: hidden;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .marquee-track { display: flex; gap: 0; animation: marqueeScroll 25s linear infinite; white-space: nowrap; }
-  @keyframes marqueeScroll { from { transform: translateX(0); } to   { transform: translateX(-50%); } }
-  .marquee-item {
-    font-family: 'Bebas Neue', cursive; font-size: 1.2rem; letter-spacing: 3px;
-    color: var(--deep-navy); padding: 0 30px; display: flex; align-items: center; gap: 14px;
-  }
-  .marquee-item::after { content: '✦'; color: rgba(10,14,42,0.5); }
+    .marquee-section {
+      background: linear-gradient(90deg,
+          var(--gold),
+          var(--hot-orange),
+          var(--accent-pink),
+          var(--gold));
+      padding: 14px 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-  /* ══════════════════════════════
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      animation: marqueeScroll 25s linear infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes marqueeScroll {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    .marquee-item {
+      font-family: "Bebas Neue", cursive;
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+      color: var(--deep-navy);
+      padding: 0 30px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .marquee-item::after {
+      content: "✦";
+      color: rgba(10, 14, 42, 0.5);
+    }
+
+    /* ══════════════════════════════
      TOKENOMICS
   ══════════════════════════════ */
-  .tokenomics { padding: 8rem 8vw; position: relative; }
-  .section-label {
-    font-family: 'Bebas Neue', cursive; font-size: 0.85rem; letter-spacing: 5px;
-    color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 0.5rem;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .section-label::before {
-    content: ''; width: 40px; height: 2px;
-    background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan);
-  }
-  .section-title { font-family: 'Bebas Neue', cursive; font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1; margin-bottom: 3rem; }
-  .section-title em {
-    font-style: normal;
-    background: linear-gradient(90deg, var(--gold), var(--hot-orange));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
+    .tokenomics {
+      padding: 8rem 8vw;
+      position: relative;
+    }
 
-  .toki-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
-  .toki-card {
-    background: var(--glass-dark); border: 1px solid var(--glass-border);
-    border-radius: 16px; padding: 2rem; position: relative; overflow: hidden;
-    backdrop-filter: blur(12px); transition: transform .3s, box-shadow .3s, border-color .3s;
-    animation: cardReveal .6s both;
-  }
-  .toki-card:nth-child(2) { animation-delay: .1s; }
-  .toki-card:nth-child(3) { animation-delay: .2s; }
-  .toki-card:nth-child(4) { animation-delay: .3s; }
-  @keyframes cardReveal { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-  .toki-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: var(--card-accent, linear-gradient(90deg, var(--gold), var(--hot-orange)));
-  }
-  .toki-card:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 24px 70px rgba(0,0,0,0.5), 0 0 60px var(--card-glow, rgba(245,200,66,0.3));
-    border-color: rgba(255,255,255,0.2);
-  }
-  .toki-card:nth-child(1) { --card-accent: linear-gradient(90deg, var(--gold), var(--hot-orange)); --card-glow: rgba(245,200,66,0.3); }
-  .toki-card:nth-child(2) { --card-accent: linear-gradient(90deg, var(--accent-cyan), #0090ff); --card-glow: rgba(0,229,255,0.3); }
-  .toki-card:nth-child(3) { --card-accent: linear-gradient(90deg, var(--accent-pink), #c0048a); --card-glow: rgba(255,45,120,0.3); }
-  .toki-card:nth-child(4) { --card-accent: linear-gradient(90deg, var(--accent-green), #00b809); --card-glow: rgba(57,255,20,0.3); }
+    .section-label {
+      font-family: "Bebas Neue", cursive;
+      font-size: 0.85rem;
+      letter-spacing: 5px;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-  .toki-pct {
-    font-family: 'Bebas Neue', cursive; font-size: 3.5rem;
-    background: var(--card-accent); -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; background-clip: text;
-    filter: drop-shadow(0 0 20px rgba(245,200,66,0.4)); display: block;
-  }
-  .toki-name { font-family: 'Righteous', cursive; font-size: 1.1rem; color: var(--salt-white); margin-bottom: 0.5rem; }
-  .toki-desc { font-size: 0.75rem; color: rgba(240,237,232,0.5); line-height: 1.6; }
+    .section-label::before {
+      content: "";
+      width: 40px;
+      height: 2px;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+    }
 
-  /* ══════════════════════════════
+    .section-title {
+      font-family: "Bebas Neue", cursive;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 1;
+      margin-bottom: 3rem;
+    }
+
+    .section-title em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--gold), var(--hot-orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .toki-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .toki-card {
+      background: var(--glass-dark);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition:
+        transform 0.3s,
+        box-shadow 0.3s,
+        border-color 0.3s;
+      animation: cardReveal 0.6s both;
+    }
+
+    .toki-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .toki-card:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .toki-card:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes cardReveal {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .toki-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--card-accent,
+          linear-gradient(90deg, var(--gold), var(--hot-orange)));
+    }
+
+    .toki-card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.5),
+        0 0 60px var(--card-glow, rgba(245, 200, 66, 0.3));
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .toki-card:nth-child(1) {
+      --card-accent: linear-gradient(90deg, var(--gold), var(--hot-orange));
+      --card-glow: rgba(245, 200, 66, 0.3);
+    }
+
+    .toki-card:nth-child(2) {
+      --card-accent: linear-gradient(90deg, var(--accent-cyan), #0090ff);
+      --card-glow: rgba(0, 229, 255, 0.3);
+    }
+
+    .toki-card:nth-child(3) {
+      --card-accent: linear-gradient(90deg, var(--accent-pink), #c0048a);
+      --card-glow: rgba(255, 45, 120, 0.3);
+    }
+
+    .toki-card:nth-child(4) {
+      --card-accent: linear-gradient(90deg, var(--accent-green), #00b809);
+      --card-glow: rgba(57, 255, 20, 0.3);
+    }
+
+    .toki-pct {
+      font-family: "Bebas Neue", cursive;
+      font-size: 3.5rem;
+      background: var(--card-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(245, 200, 66, 0.4));
+      display: block;
+    }
+
+    .toki-name {
+      font-family: "Righteous", cursive;
+      font-size: 1.1rem;
+      color: var(--salt-white);
+      margin-bottom: 0.5rem;
+    }
+
+    .toki-desc {
+      font-size: 0.75rem;
+      color: rgba(240, 237, 232, 0.5);
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════
      HOW TO BUY
   ══════════════════════════════ */
-  .how-to-buy {
-    padding: 6rem 8vw;
-    background: linear-gradient(180deg, transparent 0%, rgba(20,25,80,0.4) 50%, transparent 100%);
-  }
-  .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-top: 3rem; }
-  .step-card {
-    position: relative; padding: 2.5rem 2rem;
-    background: var(--glass-dark); border: 1px solid var(--glass-border);
-    border-radius: 20px; backdrop-filter: blur(10px);
-    transition: transform .3s, box-shadow .3s, border-color .3s;
-  }
-  .step-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(245,200,66,0.2);
-    border-color: rgba(245,200,66,0.3);
-  }
-  .step-card:hover .step-icon { transform: scale(1.3) rotate(-5deg); }
-  .step-num {
-    font-family: 'Bebas Neue', cursive; font-size: 5rem; color: rgba(245,200,66,0.08);
-    position: absolute; top: 10px; right: 20px; line-height: 1; user-select: none;
-  }
-  .step-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; transition: transform .3s; }
-  .step-title { font-family: 'Righteous', cursive; font-size: 1.2rem; color: var(--gold); margin-bottom: 0.8rem; }
-  .step-body { font-size: 0.8rem; color: rgba(240,237,232,0.55); line-height: 1.7; }
+    .how-to-buy {
+      padding: 6rem 8vw;
+      background: linear-gradient(180deg,
+          transparent 0%,
+          rgba(20, 25, 80, 0.4) 50%,
+          transparent 100%);
+    }
 
-  /* ══════════════════════════════
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .step-card {
+      position: relative;
+      padding: 2.5rem 2rem;
+      background: var(--glass-dark);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      transition:
+        transform 0.3s,
+        box-shadow 0.3s,
+        border-color 0.3s;
+    }
+
+    .step-card:hover {
+      transform: translateY(-8px);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(245, 200, 66, 0.2);
+      border-color: rgba(245, 200, 66, 0.3);
+    }
+
+    .step-card:hover .step-icon {
+      transition: .8s;
+      transform: scale(1.7) translateY(-5px) translateX(5px) rotate(-6deg);
+    }
+
+    .step-num {
+      font-family: "Bebas Neue", cursive;
+      font-size: 5rem;
+      color: rgba(245, 200, 66, 0.537);
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .step-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+      transition: transform 0.2s;
+    }
+
+    .step-title {
+      font-family: "Righteous", cursive;
+      font-size: 1.2rem;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+
+    .step-body {
+      font-size: 0.8rem;
+      color: rgba(240, 237, 232, 0.55);
+      line-height: 1.7;
+    }
+
+    .step-card:hover .step-body {
+      transition: 2s;
+      color: rgb(255, 255, 255);
+    }
+
+    .step-card:hover .step-num {
+      transition: 1s;
+      color: rgb(248, 201, 58);
+    }
+
+    /* ══════════════════════════════
      CTA FOOTER SECTION
   ══════════════════════════════ */
-  .cta-section { padding: 8rem 8vw 4rem; text-align: center; position: relative; overflow: hidden; }
-  .cta-section::before {
-    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(245,200,66,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .cta-title { font-family: 'Bebas Neue', cursive; font-size: clamp(3rem, 8vw, 7rem); line-height: 0.95; margin-bottom: 1.5rem; }
-  .cta-title .accent {
-    color: var(--gold); text-shadow: 0 0 40px rgba(245,200,66,0.5);
-    transition: text-shadow .3s;
-  }
-  .cta-title .accent:hover { text-shadow: 0 0 80px rgba(245,200,66,1), 0 0 150px rgba(245,200,66,0.5); }
-  .cta-sub { font-family: 'Boogaloo', cursive; font-size: 1.3rem; color: rgba(240,237,232,0.6); max-width: 500px; margin: 0 auto 2.5rem; }
-  .cta-btns { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; }
+    .cta-section {
+      padding: 8rem 8vw 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-  /* Social row */
-  .social-row { display: flex; gap: 1.5rem; justify-content: center; margin-top: 3rem; padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.06); }
-  .social-btn {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: var(--glass-dark); border: 1px solid var(--glass-border);
-    display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
-    cursor: pointer; transition: all .25s; text-decoration: none;
-  }
-  .social-btn:hover {
-    background: rgba(245,200,66,0.15); border-color: var(--gold);
-    transform: translateY(-6px);
-    box-shadow: 0 12px 35px rgba(245,200,66,0.35), 0 0 50px rgba(245,200,66,0.15);
-  }
+    .cta-section::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle,
+          rgba(245, 200, 66, 0.08) 0%,
+          transparent 70%);
+      pointer-events: none;
+    }
 
-  footer { text-align: center; padding: 2rem; color: rgba(240,237,232,0.2); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+    .cta-title {
+      font-family: "Bebas Neue", cursive;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.95;
+      margin-bottom: 1.5rem;
+    }
 
-  /* responsive */
-  @media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; padding: 6rem 5vw 3rem; text-align: center; }
-    .hero-scene { height: 420px; }
-    .hero-btns, .stats-strip { justify-content: center; }
-    .nav-links { display: none; }
-    .mascot-badge { right: 10px; }
-    .mascot-badge2 { left: -10px; }
-    .mascot { width: 200px; }
-    .s-body { width: 168px; height: 232px; }
-    .s-cap-top, .s-cap-holes, .s-cap-neck { width: 126px; }
-    .s-cap-top { width: 120px; }
-    .s-cap-holes { width: 120px; }
-    .s-cap-neck { width: 132px; }
-  }
-</style>
+    .cta-title .accent {
+      color: var(--gold);
+      text-shadow: 0 0 40px rgba(245, 200, 66, 0.5);
+      transition: text-shadow 0.3s;
+    }
+
+    .cta-title .accent:hover {
+      text-shadow:
+        0 0 80px rgba(245, 200, 66, 1),
+        0 0 150px rgba(245, 200, 66, 0.5);
+    }
+
+    .cta-sub {
+      font-family: "Boogaloo", cursive;
+      font-size: 1.3rem;
+      color: rgba(240, 237, 232, 0.6);
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Social row */
+    .social-row {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 3rem;
+      padding-top: 3rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .social-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--glass-dark);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-decoration: none;
+    }
+
+    .social-btn:hover {
+      background: rgba(245, 200, 66, 0.15);
+      border-color: var(--gold);
+      transform: translateY(-6px);
+      box-shadow:
+        0 12px 35px rgba(245, 200, 66, 0.35),
+        0 0 50px rgba(245, 200, 66, 0.15);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(240, 237, 232, 0.2);
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* responsive */
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 6rem 5vw 3rem;
+        text-align: center;
+      }
+
+      .hero-scene {
+        height: 420px;
+      }
+
+      .hero-btns,
+      .stats-strip {
+        justify-content: center;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .mascot-badge {
+        right: 10px;
+      }
+
+      .mascot-badge2 {
+        left: -10px;
+      }
+
+      .mascot {
+        width: 200px;
+      }
+
+      .s-body {
+        width: 168px;
+        height: 232px;
+      }
+
+      .s-cap-top,
+      .s-cap-holes,
+      .s-cap-neck {
+        width: 126px;
+      }
+
+      .s-cap-top {
+        width: 120px;
+      }
+
+      .s-cap-holes {
+        width: 120px;
+      }
+
+      .s-cap-neck {
+        width: 132px;
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <canvas id="bg-canvas"></canvas>
 
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-<canvas id="bg-canvas"></canvas>
+  <div id="app">
+    <!-- NAV -->
+    <nav>
+      <div class="nav-logo">$NAMAK</div>
+      <ul class="nav-links">
+        <li><a href="#tokenomics">Tokenomics</a></li>
+        <li><a href="#buy">How To Buy</a></li>
+        <li><a href="#community">Community</a></li>
+        <li><a href="banner.html" >Banner</a></li>
+      </ul>
+      <button class="nav-cta">Buy $NAMAK</button>
+    </nav>
 
-<div id="app">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-text">
+        <div class="ticker-badge">$NAMAK • ON SOLANA</div>
+        <h1 class="hero-title">
+          <span class="line1">Lawden</span>
+          <span class="line2">Bhojyam</span>
+        </h1>
+        <p class="hero-tagline">
+          The saltiest coin in crypto.<br />
+          <em>Season your portfolio</em> with flavor. 🧂
+        </p>
+        <div class="hero-btns">
+          <button class="btn-primary">Buy $NAMAK
+            <img class="btn-img" width="25" height="25" src="https://img.icons8.com/ios-filled/1000/0b0e2a/rocket.png"
+              alt="rocket" />
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">$NAMAK</div>
-  <ul class="nav-links">
-    <li><a href="#tokenomics">Tokenomics</a></li>
-    <li><a href="#buy">How To Buy</a></li>
-    <li><a href="#community">Community</a></li>
-    <li><a href="banner.html" class="banner-link">🎨 Banner</a></li>
-  </ul>
-  <button class="nav-cta">Buy $NAMAK</button>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-text">
-    <div class="ticker-badge">$NAMAK • ON SOLANA</div>
-    <h1 class="hero-title">
-      <span class="line1">Lawden</span>
-      <span class="line2">Bhojyam</span>
-    </h1>
-    <p class="hero-tagline">
-      The saltiest coin in crypto.<br>
-      <em>Season your portfolio</em> with flavor. 🧂
-    </p>
-    <div class="hero-btns">
-      <button class="btn-primary">Buy $NAMAK 🚀</button>
-      <button class="btn-secondary"><span>View Chart 📈</span></button>
-    </div>
-    <div class="stats-strip">
-      <div class="stat"><span class="stat-val">1B</span><span class="stat-label">Total Supply</span></div>
-      <div class="stat"><span class="stat-val">0%</span><span class="stat-label">Tax</span></div>
-      <div class="stat"><span class="stat-val">LP 🔥</span><span class="stat-label">Burned</span></div>
-    </div>
-  </div>
-
-  <div class="hero-scene">
-    <!-- Shine rays -->
-    <div class="shine-rays" id="shineRays"></div>
-    <!-- Platform glow -->
-    <div class="platform"></div>
-    <!-- Salt particles -->
-    <div class="salt-particles" id="saltParticles"></div>
-    <!-- Grain field for scene -->
-    <div class="grain-field" id="sceneGrains"></div>
-    <!-- Badges -->
-    <div class="mascot-badge">SALTY AF 😎</div>
-    <div class="mascot-badge2">100x SEASONING 🧂</div>
-
-    <!-- MASCOT (banner-style) -->
-    <div class="mascot-wrap" id="mascot">
-      <div class="mascot">
-        <div class="s-halo"></div>
-        <!-- Cap -->
-        <div class="s-cap-top"></div>
-        <div class="s-cap-holes" id="capHoles"></div>
-        <div class="s-cap-neck"></div>
-        <!-- Body -->
-        <div class="s-body">
-          <div class="s-face">
-            <div class="s-eyebrows">
-              <div class="s-eb l"></div>
-              <div class="s-eb r"></div>
-            </div>
-            <div class="s-glasses">
-              <div class="s-arm-l"></div>
-              <div class="s-lens"></div>
-              <div class="s-bridge"></div>
-              <div class="s-lens"></div>
-              <div class="s-arm-r"></div>
-            </div>
-            <div class="s-blushes"><div class="s-blush"></div><div class="s-blush"></div></div>
-            <div class="s-smirk"></div>
+          </button>
+          <button onclick="
+                window.open(
+                  'https://pump.fun/coin/F5EUuScapmBHJwLoZjV8ZZDqeALUiP5fp1V5uFT4pump',
+                  '_blank',
+                )
+              " class="btn-secondary">
+            <span>View Chart
+              <img class="btn-img" width="25" height="25"
+                src="https://img.icons8.com/ios-filled/100/00E5FF/statistics--v1.png" alt="statistics--v1" />
+            </span>
+          </button>
+        </div>
+        <div class="stats-strip">
+          <div class="stat">
+            <span class="stat-val">1B</span><span class="stat-label">Total Supply</span>
           </div>
-          <div class="s-holes" id="bodyHoles"></div>
-          <div class="s-label">
-            <span class="s-label-name">NAMAK</span>
-            <span class="s-label-sub">$NAMAK · SOLANA · MEME COIN</span>
+          <div class="stat">
+            <span class="stat-val">0%</span><span class="stat-label">Tax</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val">LP 🔥</span><span class="stat-label">Burned</span>
           </div>
         </div>
       </div>
+
+      <div class="hero-scene">
+        <!-- Shine rays -->
+        <div class="shine-rays" id="shineRays"></div>
+        <!-- Platform glow -->
+        <div class="platform"></div>
+        <!-- Salt particles -->
+        <div class="salt-particles" id="saltParticles"></div>
+        <!-- Grain field for scene -->
+        <div class="grain-field" id="sceneGrains"></div>
+        <!-- Badges -->
+        <div class="mascot-badge">SALTY AF 😎</div>
+        <div class="mascot-badge2">100x SEASONING 🧂</div>
+
+        <!-- MASCOT (banner-style) -->
+        <div class="mascot-wrap" id="mascot">
+          <div class="mascot">
+            <div class="s-halo"></div>
+            <!-- Cap -->
+            <div class="s-cap-top"></div>
+            <div class="s-cap-holes" id="capHoles"></div>
+            <div class="s-cap-neck"></div>
+            <!-- Body -->
+            <div class="s-body">
+              <div class="s-face">
+                <div class="s-eyebrows">
+                  <div class="s-eb l"></div>
+                  <div class="s-eb r"></div>
+                </div>
+                <div class="s-glasses">
+                  <div class="s-arm-l"></div>
+                  <div class="s-lens"></div>
+                  <div class="s-bridge"></div>
+                  <div class="s-lens"></div>
+                  <div class="s-arm-r"></div>
+                </div>
+                <div class="s-blushes">
+                  <div class="s-blush"></div>
+                  <div class="s-blush"></div>
+                </div>
+                <div class="s-smirk"></div>
+              </div>
+              <div class="s-holes" id="bodyHoles"></div>
+              <div class="s-label">
+                <span class="s-label-name">NAMAK</span>
+                <span class="s-label-sub">$NAMAK · SOLANA · MEME COIN</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-section">
+      <div class="marquee-track" id="marqueeTrack"></div>
     </div>
+
+    <!-- TOKENOMICS -->
+    <section class="tokenomics" id="tokenomics">
+      <div class="section-label">Seasoning Breakdown</div>
+      <h2 class="section-title">Token<em>omics</em></h2>
+      <div class="toki-grid">
+        <div class="toki-card">
+          <span class="toki-pct">50%</span>
+          <div class="toki-name">Liquidity Pool</div>
+          <p class="toki-desc">
+            Burned immediately. Smooth trading forever. The floor stays spicy.
+          </p>
+        </div>
+        <div class="toki-card">
+          <span class="toki-pct">20%</span>
+          <div class="toki-name">Community</div>
+          <p class="toki-desc">
+            Airdrops, contests, meme battles. Your seasoning, your rules.
+          </p>
+        </div>
+        <div class="toki-card">
+          <span class="toki-pct">20%</span>
+          <div class="toki-name">Marketing</div>
+          <p class="toki-desc">
+            Making $NAMAK the sauciest name on every crypto timeline.
+          </p>
+        </div>
+        <div class="toki-card">
+          <span class="toki-pct">10%</span>
+          <div class="toki-name">Dev & Growth</div>
+          <p class="toki-desc">
+            Building the saltiest ecosystem in Solana. Locked & vested.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TO BUY -->
+    <section class="how-to-buy" id="buy">
+      <div class="section-label">Step by Step</div>
+      <h2 class="section-title">How to Get <em>Salty</em></h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-icon"><img width="70" height="70" src="https://img.icons8.com/plasticine/1000/wallet.png"
+              alt="wallet" /></div>
+          <div class="step-title">Get a Wallet</div>
+          <p class="step-body">
+            Download Phantom or Solflare. Set it up and keep your seed phrase
+            secret like a family recipe.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon"><img width="60" height="60" src="https://img.icons8.com/color/1000/expensive-2--v1.png"
+              alt="expensive-2--v1" /></div>
+          <div class="step-title">Buy Some SOL</div>
+          <p class="step-body">
+            Purchase SOL from any major exchange and send it to your wallet.
+            No SOL, no seasoning.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon"><img width="65" height="65"
+              src="https://img.icons8.com/stickers/1000/data-in-both-directions.png" alt="data-in-both-directions" />
+          </div>
+          <div class="step-title">Swap on Raydium</div>
+          <p class="step-body">
+            Head to Raydium or Jupiter, paste the $NAMAK contract address, and
+            swap your SOL.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <div class="step-icon"><img width="35" height="auto" src="./logo1.png" alt="data-in-both-directions" /></div>
+          <div class="step-title">Season Your Bag</div>
+          <p class="step-body">
+            HODL, meme, and spread the flavor. Your portfolio has never tasted
+            this good.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="community">
+      <h2 class="cta-title">
+        Ready to Get<br />
+        <span class="accent">Salty?</span>
+      </h2>
+      <p class="cta-sub">
+        Join 50,000+ degenerates seasoning their portfolios with $NAMAK 🧂
+      </p>
+      <div class="cta-btns">
+        <button class="btn-primary">Buy $NAMAK
+          <img class="btn-img" width="25" height="25" src="https://img.icons8.com/ios-filled/1000/0b0e2a/rocket.png"
+            alt="rocket" />
+        </button>
+        <button onclick="
+              window.open('https://t.me/welcome_to_the_bhoj_NAMAK', '_blank')
+            " class="btn-secondary">
+          Join Telegram
+          <img class="btn-img" width="25" height="25"
+            src="https://img.icons8.com/ios-filled/1000/00E5FF/telegram-app.png" alt="telegram-app" />
+        </button>
+      </div>
+      <div class="social-row">
+        <button onclick="window.open('https://twitter.com/NAMAK', '_blank')" class="social-btn"
+          href="https://twitter.com/NAMAK" title="Twitter/X">
+          <img width="25" height="25" src="https://img.icons8.com/ios-filled/100/FFFFFF/twitterx--v2.png"
+            alt="twitterx--v2" />
+        </button>
+        <button onclick="window.open('https://x.com/NAMAK_official', '_blank')" class="social-btn" title="Telegram">
+          <img width="25" height="25" src="https://img.icons8.com/ios-filled/100/FFFFFF/telegram-app.png"
+            alt="telegram-app" />
+        </button>
+        <button onclick="window.open('https://discord.gg/NAMAK', '_blank')" class="social-btn" title="Discord">
+          <img width="25" height="25" src="https://img.icons8.com/ios-filled/100/FFFFFF/discord-logo.png"
+            alt="discord-logo" />
+        </button>
+        <button onclick="
+              window.open(
+                'https://pump.fun/coin/F5EUuScapmBHJwLoZjV8ZZDqeALUiP5fp1V5uFT4pump',
+                '_blank',
+              )
+            " class="social-btn" title="Dexscreener">
+          <img width="25" height="25" src="https://img.icons8.com/ios-filled/100/FFFFFF/statistics--v1.png"
+            alt="statistics--v1" />
+        </button>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 Lawden Bhojyam · $NAMAK · Not Financial Advice · Just Season It
+      🧂
+    </footer>
   </div>
-</section>
+  <!-- /app -->
 
-<!-- MARQUEE -->
-<div class="marquee-section">
-  <div class="marquee-track" id="marqueeTrack"></div>
-</div>
+  <script>
+    /* ── CUSTOM CURSOR ── */
+    const cur = document.getElementById("cursor");
+    const ring = document.getElementById("cursor-ring");
+    let mx = 0,
+      my = 0,
+      rx = 0,
+      ry = 0;
+    document.addEventListener("mousemove", (e) => {
+      mx = e.clientX;
+      my = e.clientY;
+    });
 
-<!-- TOKENOMICS -->
-<section class="tokenomics" id="tokenomics">
-  <div class="section-label">Seasoning Breakdown</div>
-  <h2 class="section-title">Token<em>omics</em></h2>
-  <div class="toki-grid">
-    <div class="toki-card">
-      <span class="toki-pct">50%</span>
-      <div class="toki-name">Liquidity Pool</div>
-      <p class="toki-desc">Burned immediately. Smooth trading forever. The floor stays spicy.</p>
-    </div>
-    <div class="toki-card">
-      <span class="toki-pct">20%</span>
-      <div class="toki-name">Community</div>
-      <p class="toki-desc">Airdrops, contests, meme battles. Your seasoning, your rules.</p>
-    </div>
-    <div class="toki-card">
-      <span class="toki-pct">20%</span>
-      <div class="toki-name">Marketing</div>
-      <p class="toki-desc">Making $NAMAK the sauciest name on every crypto timeline.</p>
-    </div>
-    <div class="toki-card">
-      <span class="toki-pct">10%</span>
-      <div class="toki-name">Dev & Growth</div>
-      <p class="toki-desc">Building the saltiest ecosystem in Solana. Locked & vested.</p>
-    </div>
-  </div>
-</section>
+    function animCursor() {
+      cur.style.left = mx + "px";
+      cur.style.top = my + "px";
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + "px";
+      ring.style.top = ry + "px";
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+    document
+      .querySelectorAll("button, a, .toki-card, .step-card, .social-btn")
+      .forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          cur.style.transform = "translate(-50%,-50%) scale(2)";
+          ring.style.width = "60px";
+          ring.style.height = "60px";
+        });
+        el.addEventListener("mouseleave", () => {
+          cur.style.transform = "translate(-50%,-50%) scale(1)";
+          ring.style.width = "42px";
+          ring.style.height = "42px";
+        });
+      });
 
-<!-- HOW TO BUY -->
-<section class="how-to-buy" id="buy">
-  <div class="section-label">Step by Step</div>
-  <h2 class="section-title">How to Get <em>Salty</em></h2>
-  <div class="steps-grid">
-    <div class="step-card">
-      <div class="step-num">01</div>
-      <div class="step-icon">👛</div>
-      <div class="step-title">Get a Wallet</div>
-      <p class="step-body">Download Phantom or Solflare. Set it up and keep your seed phrase secret like a family recipe.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">02</div>
-      <div class="step-icon">☀️</div>
-      <div class="step-title">Buy Some SOL</div>
-      <p class="step-body">Purchase SOL from any major exchange and send it to your wallet. No SOL, no seasoning.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">03</div>
-      <div class="step-icon">🔄</div>
-      <div class="step-title">Swap on Raydium</div>
-      <p class="step-body">Head to Raydium or Jupiter, paste the $NAMAK contract address, and swap your SOL.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">04</div>
-      <div class="step-icon">🧂</div>
-      <div class="step-title">Season Your Bag</div>
-      <p class="step-body">HODL, meme, and spread the flavor. Your portfolio has never tasted this good.</p>
-    </div>
-  </div>
-</section>
+    /* ── BACKGROUND PARTICLE CANVAS ── */
+    const canvas = document.getElementById("bg-canvas");
+    const ctx = canvas.getContext("2d");
+    let W, H;
 
-<!-- CTA -->
-<section class="cta-section" id="community">
-  <h2 class="cta-title">
-    Ready to Get<br>
-    <span class="accent">Salty?</span>
-  </h2>
-  <p class="cta-sub">Join 50,000+ degenerates seasoning their portfolios with $NAMAK 🧂</p>
-  <div class="cta-btns">
-    <button class="btn-primary">Buy $NAMAK 🚀</button>
-    <button class="btn-secondary"><span>Join Telegram 📢</span></button>
-  </div>
-  <div class="social-row">
-    <a class="social-btn" title="Twitter/X">𝕏</a>
-    <a class="social-btn" title="Telegram">✈️</a>
-    <a class="social-btn" title="Discord">💬</a>
-    <a class="social-btn" title="Dexscreener">📊</a>
-  </div>
-</section>
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
 
-<footer>
-  © 2025 Lawden Bhojyam · $NAMAK · Not Financial Advice · Just Season It 🧂
-</footer>
+    const STARS = Array.from({
+        length: 140,
+      },
+      () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 2.5 + 0.4,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        a: Math.random(),
+        da: (Math.random() - 0.5) * 0.007,
+        color: Math.random() > 0.65 ?
+          "#f5c842" : Math.random() > 0.5 ?
+          "#00e5ff" : "#ffffff",
+      }),
+    );
+    const CRYSTALS = Array.from({
+        length: 25,
+      },
+      () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        size: Math.random() * 6 + 3,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -Math.random() * 0.5 - 0.15,
+        a: Math.random() * 0.5 + 0.1,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.02,
+      }),
+    );
 
-</div><!-- /app -->
+    function drawCanvas() {
+      ctx.clearRect(0, 0, W, H);
+      const grad = ctx.createRadialGradient(
+        W / 2,
+        H * 0.4,
+        0,
+        W / 2,
+        H / 2,
+        W * 0.8,
+      );
+      grad.addColorStop(0, "rgba(20,30,90,0.4)");
+      grad.addColorStop(1, "rgba(5,8,20,0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+      STARS.forEach((s) => {
+        s.x += s.vx;
+        s.y += s.vy;
+        s.a += s.da;
+        if (s.a <= 0 || s.a >= 1) s.da *= -1;
+        if (s.x < 0) s.x = W;
+        if (s.x > W) s.x = 0;
+        if (s.y < 0) s.y = H;
+        if (s.y > H) s.y = 0;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.color;
+        ctx.globalAlpha = s.a * 0.75;
+        ctx.fill();
+      });
+      CRYSTALS.forEach((c) => {
+        c.x += c.vx;
+        c.y += c.vy;
+        c.rot += c.rotSpeed;
+        if (c.y < -20) {
+          c.y = H + 20;
+          c.x = Math.random() * W;
+        }
+        ctx.save();
+        ctx.translate(c.x, c.y);
+        ctx.rotate(c.rot);
+        ctx.globalAlpha = c.a * 0.4;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(-c.size / 2, -c.size / 2, c.size, c.size);
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(drawCanvas);
+    }
+    requestAnimationFrame(drawCanvas);
 
-<script>
-/* ── CUSTOM CURSOR ── */
-const cur = document.getElementById('cursor');
-const ring = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animCursor() {
-  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
-  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
-document.querySelectorAll('button, a, .toki-card, .step-card, .social-btn').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cur.style.transform = 'translate(-50%,-50%) scale(2)';
-    ring.style.width = '60px'; ring.style.height = '60px';
-  });
-  el.addEventListener('mouseleave', () => {
-    cur.style.transform = 'translate(-50%,-50%) scale(1)';
-    ring.style.width = '42px'; ring.style.height = '42px';
-  });
-});
+    /* ── SHINE RAYS ── */
+    const shineRaysEl = document.getElementById("shineRays");
+    for (let i = 0; i < 12; i++) {
+      const r = document.createElement("div");
+      r.className = "ray";
+      r.style.transform = `rotate(${i * 30}deg)`;
+      shineRaysEl.appendChild(r);
+    }
 
-/* ── BACKGROUND PARTICLE CANVAS ── */
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-let W, H;
-function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-resize(); window.addEventListener('resize', resize);
+    /* ── CAP HOLES ── */
+    const capHolesEl = document.getElementById("capHoles");
+    for (let i = 0; i < 6; i++) {
+      const h = document.createElement("div");
+      h.className = "s-cap-hole";
+      capHolesEl.appendChild(h);
+    }
 
-const STARS = Array.from({length: 140}, () => ({
-  x: Math.random() * W, y: Math.random() * H,
-  r: Math.random() * 2.5 + 0.4,
-  vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
-  a: Math.random(), da: (Math.random() - 0.5) * 0.007,
-  color: Math.random() > 0.65 ? '#f5c842' : Math.random() > 0.5 ? '#00e5ff' : '#ffffff'
-}));
-const CRYSTALS = Array.from({length: 25}, () => ({
-  x: Math.random() * W, y: Math.random() * H,
-  size: Math.random() * 6 + 3,
-  vx: (Math.random() - 0.5) * 0.4, vy: -Math.random() * 0.5 - 0.15,
-  a: Math.random() * 0.5 + 0.1, rot: Math.random() * Math.PI * 2,
-  rotSpeed: (Math.random() - 0.5) * 0.02
-}));
+    /* ── BODY HOLES ── */
+    const bodyHoles = document.getElementById("bodyHoles");
+    const holePositions = [
+      [30, 9],
+      [52, 9],
+      [74, 9],
+      [41, 21],
+      [63, 21],
+      [30, 33],
+      [52, 33],
+      [74, 33],
+      [41, 45],
+      [63, 45],
+      [30, 57],
+      [52, 57],
+      [74, 57],
+      [41, 69],
+      [63, 69],
+    ];
+    holePositions.forEach(([l, t]) => {
+      const h = document.createElement("div");
+      h.className = "s-hole";
+      h.style.left = l + "%";
+      h.style.top = t + "%";
+      bodyHoles.appendChild(h);
+    });
 
-function drawCanvas() {
-  ctx.clearRect(0, 0, W, H);
-  const grad = ctx.createRadialGradient(W/2, H*0.4, 0, W/2, H/2, W * 0.8);
-  grad.addColorStop(0, 'rgba(20,30,90,0.4)');
-  grad.addColorStop(1, 'rgba(5,8,20,0)');
-  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
-  STARS.forEach(s => {
-    s.x += s.vx; s.y += s.vy; s.a += s.da;
-    if (s.a <= 0 || s.a >= 1) s.da *= -1;
-    if (s.x < 0) s.x = W; if (s.x > W) s.x = 0;
-    if (s.y < 0) s.y = H; if (s.y > H) s.y = 0;
-    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    ctx.fillStyle = s.color; ctx.globalAlpha = s.a * 0.75; ctx.fill();
-  });
-  CRYSTALS.forEach(c => {
-    c.x += c.vx; c.y += c.vy; c.rot += c.rotSpeed;
-    if (c.y < -20) { c.y = H + 20; c.x = Math.random() * W; }
-    ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.rot);
-    ctx.globalAlpha = c.a * 0.4; ctx.fillStyle = '#ffffff';
-    ctx.fillRect(-c.size/2, -c.size/2, c.size, c.size); ctx.restore();
-  });
-  ctx.globalAlpha = 1;
-  requestAnimationFrame(drawCanvas);
-}
-requestAnimationFrame(drawCanvas);
+    /* ── SALT GRAINS (banner-style: scene-relative) ── */
+    const sceneEl = document.querySelector(".hero-scene");
+    const grainField = document.getElementById("sceneGrains");
 
-/* ── SHINE RAYS ── */
-const shineRaysEl = document.getElementById('shineRays');
-for (let i = 0; i < 12; i++) {
-  const r = document.createElement('div');
-  r.className = 'ray';
-  r.style.transform = `rotate(${i * 30}deg)`;
-  shineRaysEl.appendChild(r);
-}
-
-/* ── CAP HOLES ── */
-const capHolesEl = document.getElementById('capHoles');
-for (let i = 0; i < 6; i++) {
-  const h = document.createElement('div');
-  h.className = 's-cap-hole';
-  capHolesEl.appendChild(h);
-}
-
-/* ── BODY HOLES ── */
-const bodyHoles = document.getElementById('bodyHoles');
-const holePositions = [
-  [30,9],[52,9],[74,9],[41,21],[63,21],[30,33],[52,33],[74,33],
-  [41,45],[63,45],[30,57],[52,57],[74,57],[41,69],[63,69]
-];
-holePositions.forEach(([l,t]) => {
-  const h = document.createElement('div');
-  h.className = 's-hole';
-  h.style.left = l + '%'; h.style.top = t + '%';
-  bodyHoles.appendChild(h);
-});
-
-/* ── SALT GRAINS (banner-style: scene-relative) ── */
-const sceneEl = document.querySelector('.hero-scene');
-const grainField = document.getElementById('sceneGrains');
-
-// Grains fly out from mascot area — positioned relative to scene
-// Mascot center is approx 50% x, 40% from top in the scene
-for (let i = 0; i < 55; i++) {
-  const g = document.createElement('div');
-  g.className = 'grain';
-  const size = 4 + Math.random() * 9;
-  const angle = -Math.PI * 0.15 - Math.random() * Math.PI * 0.7;
-  const dist  = 60 + Math.random() * 280;
-  const spreadX = (Math.random() - 0.5) * 80;
-  const spreadY = (Math.random() - 0.5) * 30;
-  // Scene center-ish in px
-  const bx = 200 + spreadX; // px from left within scene
-  const by = 180 + spreadY; // px from top within scene
-  g.style.cssText = `
+    // Grains fly out from mascot area — positioned relative to scene
+    // Mascot center is approx 50% x, 40% from top in the scene
+    for (let i = 0; i < 55; i++) {
+      const g = document.createElement("div");
+      g.className = "grain";
+      const size = 4 + Math.random() * 9;
+      const angle = -Math.PI * 0.15 - Math.random() * Math.PI * 0.7;
+      const dist = 60 + Math.random() * 280;
+      const spreadX = (Math.random() - 0.5) * 20;
+      const spreadY = (Math.random() - 0.5) * 80;
+      // Scene center-ish in px
+      const bx = 250 + spreadX; // px from left within scene
+      const by = 95 + spreadY; // px from top within scene
+      g.style.cssText = `
     left:${bx}px; top:${by}px;
     width:${size}px; height:${size}px;
     --tx:${Math.cos(angle) * dist}px;
     --ty:${Math.sin(angle) * dist}px;
-    --tr:${(Math.random()-0.5)*800}deg;
-    --d:${1.4 + Math.random()*2.4}s;
-    --delay:${Math.random()*3.5}s;
+    --tr:${(Math.random() - 0.5) * 800}deg;
+    --d:${1.4 + Math.random() * 2.4}s;
+    --delay:${Math.random() * 3.5}s;
   `;
-  grainField.appendChild(g);
-}
-// Extra ambient grains floating around the mascot scene
-for (let i = 0; i < 20; i++) {
-  const g = document.createElement('div');
-  g.className = 'grain';
-  const size = 3 + Math.random() * 5;
-  g.style.cssText = `
-    left:${100 + Math.random()*200}px; top:${80 + Math.random()*300}px;
+      grainField.appendChild(g);
+    }
+    // Extra ambient grains floating around the mascot scene
+    for (let i = 0; i < 20; i++) {
+      const g = document.createElement("div");
+      g.className = "grain";
+      const size = 3 + Math.random() * 5;
+      g.style.cssText = `
+    left:${100 + Math.random() * 200}px; top:${80 + Math.random() * 300}px;
     width:${size}px; height:${size}px;
-    --tx:${(Math.random()-0.5)*150}px;
-    --ty:${-40 - Math.random()*120}px;
-    --tr:${(Math.random()-0.5)*400}deg;
-    --d:${2.2 + Math.random()*3}s;
-    --delay:${Math.random()*4.5}s;
+    --tx:${(Math.random() - 0.5) * 150}px;
+    --ty:${-40 - Math.random() * 120}px;
+    --tr:${(Math.random() - 0.5) * 400}deg;
+    --d:${2.2 + Math.random() * 3}s;
+    --delay:${Math.random() * 4.5}s;
     box-shadow:0 0 ${size}px rgba(255,255,255,0.7);
   `;
-  grainField.appendChild(g);
-}
+      grainField.appendChild(g);
+    }
 
-/* ── SALT PARTICLES FROM MASCOT (extra orbiting) ── */
-const particleContainer = document.getElementById('saltParticles');
-for (let i = 0; i < 18; i++) {
-  const sp = document.createElement('div');
-  sp.className = 'sp';
-  const angle = Math.random() * 2 * Math.PI;
-  const dist = 80 + Math.random() * 100;
-  sp.style.cssText = `
+    /* ── SALT PARTICLES FROM MASCOT (extra orbiting) ── */
+    const particleContainer = document.getElementById("saltParticles");
+    for (let i = 0; i < 18; i++) {
+      const sp = document.createElement("div");
+      sp.className = "sp";
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = 80 + Math.random() * 100;
+      sp.style.cssText = `
     left: ${50 + 35 * Math.cos(angle)}%;
     top: ${35 + 20 * Math.sin(angle)}%;
     --tx: ${Math.cos(angle) * dist}px;
@@ -985,80 +2078,104 @@ for (let i = 0; i < 18; i++) {
     width: ${4 + Math.random() * 6}px;
     height: ${4 + Math.random() * 6}px;
   `;
-  particleContainer.appendChild(sp);
-}
+      particleContainer.appendChild(sp);
+    }
 
-/* ── MARQUEE ── */
-const marqueeItems = [
-  '$NAMAK', 'LAWDEN BHOJYAM', 'THE SALTIEST COIN', 'SEASON YOUR PORTFOLIO',
-  'BUY $NAMAK', 'SOLANA 🧂', '0% TAX', 'LP BURNED 🔥', 'TO THE MOON 🚀'
-];
-const track = document.getElementById('marqueeTrack');
-[...marqueeItems, ...marqueeItems, ...marqueeItems].forEach(item => {
-  const div = document.createElement('div');
-  div.className = 'marquee-item';
-  div.textContent = item;
-  track.appendChild(div);
-});
+    /* ── MARQUEE ── */
+    const marqueeItems = [
+      "$NAMAK",
+      "LAWDEN BHOJYAM",
+      "THE SALTIEST COIN",
+      "SEASON YOUR PORTFOLIO",
+      "BUY $NAMAK",
+      "SOLANA 🧂",
+      "0% TAX",
+      "LP BURNED 🔥",
+      "TO THE MOON 🚀",
+    ];
+    const track = document.getElementById("marqueeTrack");
+    [...marqueeItems, ...marqueeItems, ...marqueeItems].forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "marquee-item";
+      div.textContent = item;
+      track.appendChild(div);
+    });
 
-/* ── MASCOT MOUSE PARALLAX ── */
-const mascotEl = document.getElementById('mascot');
-document.addEventListener('mousemove', e => {
-  const cx = window.innerWidth / 2;
-  const cy = window.innerHeight / 2;
-  const dx = (e.clientX - cx) / cx;
-  const dy = (e.clientY - cy) / cy;
-  mascotEl.style.transform = `translateY(${-14 * Math.abs(Math.sin(Date.now()/1000))}px) rotateY(${dx * 15}deg) rotateX(${-dy * 8}deg)`;
-});
+    /* ── MASCOT MOUSE PARALLAX ── */
+    const mascotEl = document.getElementById("mascot");
+    document.addEventListener("mousemove", (e) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx;
+      const dy = (e.clientY - cy) / cy;
+      mascotEl.style.transform =
+        `translateY(${-14 * Math.abs(Math.sin(Date.now() / 1000))}px) rotateY(${dx * 15}deg) rotateX(${-dy * 8}deg)`;
+    });
 
-/* ── SCROLL REVEAL ── */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.style.opacity = '1'; });
-}, { threshold: 0.1 });
-document.querySelectorAll('.toki-card, .step-card').forEach(el => observer.observe(el));
+    /* ── SCROLL REVEAL ── */
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.style.opacity = "1";
+        });
+      }, {
+        threshold: 0.1,
+      },
+    );
+    document
+      .querySelectorAll(".toki-card, .step-card")
+      .forEach((el) => observer.observe(el));
 
-/* ── BUTTON RIPPLE ── */
-document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    const rect = this.getBoundingClientRect();
-    const ripple = document.createElement('span');
-    ripple.style.cssText = `
-      position:absolute;left:${e.clientX-rect.left}px;top:${e.clientY-rect.top}px;
+    /* ── BUTTON RIPPLE ── */
+    document
+      .querySelectorAll(".btn-primary, .btn-secondary")
+      .forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          const rect = this.getBoundingClientRect();
+          const ripple = document.createElement("span");
+          ripple.style.cssText = `
+      position:absolute;left:${e.clientX - rect.left}px;top:${e.clientY - rect.top}px;
       width:0;height:0;border-radius:50%;
       background:rgba(255,255,255,0.35);
       transform:translate(-50%,-50%);
       animation:rippleAnim .5s ease-out forwards;
       pointer-events:none;
     `;
-    this.style.position = 'relative';
-    this.appendChild(ripple);
-    ripple.addEventListener('animationend', () => ripple.remove());
-  });
-});
-const style = document.createElement('style');
-style.textContent = `@keyframes rippleAnim { to { width:300px; height:300px; opacity:0; } }`;
-document.head.appendChild(style);
+          this.style.position = "relative";
+          this.appendChild(ripple);
+          ripple.addEventListener("animationend", () => ripple.remove());
+        });
+      });
+    const style = document.createElement("style");
+    style.textContent = `@keyframes rippleAnim { to { width:300px; height:300px; opacity:0; } }`;
+    document.head.appendChild(style);
 
-/* ── COUNTER ANIMATION ── */
-function animCount(el, target, suffix) {
-  let current = 0; const inc = target / 60;
-  const interval = setInterval(() => {
-    current = Math.min(current + inc, target);
-    el.textContent = Math.floor(current) + suffix;
-    if (current >= target) clearInterval(interval);
-  }, 16);
-}
-const statsObserver = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const vals = e.target.querySelectorAll('.stat-val');
-      if (vals[0]) animCount(vals[0], 1, 'B');
-      statsObserver.unobserve(e.target);
+    /* ── COUNTER ANIMATION ── */
+    function animCount(el, target, suffix) {
+      let current = 0;
+      const inc = target / 60;
+      const interval = setInterval(() => {
+        current = Math.min(current + inc, target);
+        el.textContent = Math.floor(current) + suffix;
+        if (current >= target) clearInterval(interval);
+      }, 16);
     }
-  });
-}, { threshold: 0.5 });
-const statsStrip = document.querySelector('.stats-strip');
-if (statsStrip) statsObserver.observe(statsStrip);
-</script>
+    const statsObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            const vals = e.target.querySelectorAll(".stat-val");
+            if (vals[0]) animCount(vals[0], 1, "B");
+            statsObserver.unobserve(e.target);
+          }
+        });
+      }, {
+        threshold: 0.5,
+      },
+    );
+    const statsStrip = document.querySelector(".stats-strip");
+    if (statsStrip) statsObserver.observe(statsStrip);
+  </script>
 </body>
+
 </html>
